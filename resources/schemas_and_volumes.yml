@@ -1,0 +1,29 @@
+resources:
+  schemas:
+    raw_files_schema:
+      name: raw_files
+      catalog_name: ${var.catalog}
+      comment: "Schema for landing volume and raw mock data"
+
+    bronze_schema:
+      name: bronze
+      catalog_name: ${var.catalog}
+      comment: "Raw ingested Delta tables as-is"
+
+    silver_schema:
+      name: silver
+      catalog_name: ${var.catalog}
+      comment: "Cleaned and validated tables"
+
+    gold_schema:
+      name: gold
+      catalog_name: ${var.catalog}
+      comment: "Aggregated business metrics"
+
+  volumes:
+    landing_volume:
+      name: landing
+      catalog_name: ${var.catalog}
+      schema_name: raw_files
+      volume_type: MANAGED
+      comment: "Landing volume for Parquet, Avro and Stream JSONs"

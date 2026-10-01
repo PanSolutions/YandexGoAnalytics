@@ -1,0 +1,34 @@
+bundle:
+  name: yandex-go-analytics
+
+include:
+  - resources/*.yml
+
+variables:
+  catalog:
+    description: "Target Unity Catalog"
+  environment:
+    description: "Environment name"
+  alert_email:
+    description: "Email for job failure notifications"
+    default: "stanislav.panfilenko@gmail.com"
+
+targets:
+  dev:
+    mode: development
+    default: true
+    variables:
+      catalog: yandex_go_dev
+      environment: dev
+
+  staging:
+    mode: production
+    variables:
+      catalog: yandex_go_staging
+      environment: staging
+
+  prod:
+    mode: production
+    variables:
+      catalog: yandex_go_prod
+      environment: prod

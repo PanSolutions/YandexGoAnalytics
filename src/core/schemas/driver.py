@@ -9,6 +9,7 @@ class DriverSchema(BaseEntitySchema):
     @classmethod
     def get_spark_schema(cls, include_phone: bool = False) -> T.StructType:
         fields = [
+            T.StructField("id", T.StringType(), False),
             T.StructField("name", T.StringType(), False),
             T.StructField("car_number", T.StringType(), False),
             T.StructField("experience", T.IntegerType(), False),

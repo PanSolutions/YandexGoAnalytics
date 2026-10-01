@@ -3,19 +3,21 @@ from __future__ import annotations
 from datetime import datetime
 import random
 
+from faker import Faker
 from pyspark.sql import DataFrame, SparkSession
 
-from src.core.services.data_generation.base_generator import BaseFileGenerator
 from src.core.schemas.driver import DriverSchema
+from src.core.services.data_generation.base_generator import BaseFileGenerator
 
 
-class JsonDriversGenerator(BaseFileGenerator):
+class DriverGenerator(BaseFileGenerator):
 
     def __init__(
-            self,
-            subfolder: str = "drivers_stream",
-            volume_name: str = "landing",
-            locale: str = "en_US",
+        self,
+        subfolder: str = "drivers_stream",
+        volume_name: str = "landing",
+        locale: str = "en_US",
+        pool_size: int = 100,
     ) -> None:
         super().__init__(
             subfolder=subfolder,
@@ -23,31 +25,39 @@ class JsonDriversGenerator(BaseFileGenerator):
             volume_name=volume_name,
             locale=locale,
         )
+        self.pool_size = pool_size
+
+    @staticmethod
+    def get_driver_id_pool(pool_size: int = 100) -> list[str]:
+        seeded_faker = Faker()
+        seeded_faker.seed_instance(100)
+        return [seeded_faker.uuid4() for _ in range(pool_size)]
 
     def generate_batch_df(
         self,
         spark: SparkSession,
-        row_count: int = 15,
+        row_count: int = 20,
         with_phone: bool = False,
     ) -> DataFrame:
-        """Создает DataFrame водителей на лету."""
         schema = DriverSchema.get_spark_schema(include_phone=with_phone)
-        letters = ["А", "В", "Е", "К", "М", "Н", "О", "Р", "С", "Т", "У", "Х"]
+        driver_ids = self.get_driver_id_pool(self.pool_size)
+
+        letters = ["A", "B", "E", "K", "M", "H", "O", "P", "C", "T", "Y", "X"]
         rows = []
 
         for _ in range(row_count):
             plate = (
                 f"{random.choice(letters)}"
                 f"{random.randint(100, 999)}"
-                f"{random.choice(letters)}{random.choice(letters)} "
-                f"{random.choice(['77', '99', '199', '777'])}"
+                f"{random.choice(letters)}{random.choice(letters)}"
             )
 
             data = [
+                random.choice(driver_ids),
                 self.faker.name(),
                 plate,
-                random.randint(1, 20),
-                round(random.uniform(4.3, 5.0), 2),
+                random.randint(1, 25),
+                round(random.uniform(4.2, 5.0), 2),
                 datetime.now(),
             ]
 
