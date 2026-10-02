@@ -1,0 +1,20 @@
+site_name: Yandex Go Analytics Platform
+site_description: Documentation for Data Ingestion & Delta Lake Pipelines
+theme:
+  name: material
+  palette:
+    scheme: slate
+    primary: indigo
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [.]
+
+nav:
+  - Home: index.md
+  - Architecture: index.md
+  - API Reference:
+      - Ingestion Services: api/ingestion.md
