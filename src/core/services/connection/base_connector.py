@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
+
 from loguru import logger
 
 
 class BaseConnectionService(ABC):
-
     def __init__(self):
         self.is_connected = False
 
@@ -30,7 +30,5 @@ class BaseConnectionService(ABC):
             logger.error(f"Error while disconnecting in context manager: {e}")
 
         if exc_val:
-            logger.exception(
-                f"❌ Exception caught in connection context session: {exc_val}"
-            )
+            logger.exception(f"❌ Exception caught in connection context session: {exc_val}")
             return False

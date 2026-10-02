@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from datetime import datetime
 import random
+from datetime import datetime
 
 from faker import Faker
 from pyspark.sql import DataFrame, SparkSession
@@ -11,7 +11,6 @@ from src.core.services.data_generation.base_generator import BaseFileGenerator
 
 
 class DriverGenerator(BaseFileGenerator):
-
     def __init__(
         self,
         subfolder: str = "drivers_stream",

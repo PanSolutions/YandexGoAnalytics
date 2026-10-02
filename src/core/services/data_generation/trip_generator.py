@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from datetime import timedelta
 import random
+from datetime import timedelta
 
 from pyspark.sql import SparkSession
 
@@ -12,7 +12,6 @@ from src.core.services.data_generation.user_generator import UserGenerator
 
 
 class TripGenerator(BaseFileGenerator):
-
     def __init__(
         self,
         subfolder: str = "taxi_trips",
@@ -64,30 +63,32 @@ class TripGenerator(BaseFileGenerator):
             valid_user_id = random.choice(self.user_ids)
             valid_driver_id = random.choice(self.driver_ids)
 
-            rows.append((
-                self.faker.uuid4(),
-                valid_user_id,
-                valid_driver_id,
-                random.choice([1, 2]),
-                pickup,
-                dropoff,
-                random.randint(1, 6),
-                float(distance),
-                random.choice([1, 1, 1, 2, 3, 4, 5]),
-                random.choice(["N", "Y"]),
-                random.randint(1, 263),
-                random.randint(1, 263),
-                random.choice([1, 1, 2, 3, 4]),
-                float(fare),
-                float(extra),
-                float(mta_tax),
-                float(tip),
-                float(tolls),
-                float(improvement_surcharge),
-                float(total),
-                float(congestion_surcharge),
-                float(airport_fee),
-            ))
+            rows.append(
+                (
+                    self.faker.uuid4(),
+                    valid_user_id,
+                    valid_driver_id,
+                    random.choice([1, 2]),
+                    pickup,
+                    dropoff,
+                    random.randint(1, 6),
+                    float(distance),
+                    random.choice([1, 1, 1, 2, 3, 4, 5]),
+                    random.choice(["N", "Y"]),
+                    random.randint(1, 263),
+                    random.randint(1, 263),
+                    random.choice([1, 1, 2, 3, 4]),
+                    float(fare),
+                    float(extra),
+                    float(mta_tax),
+                    float(tip),
+                    float(tolls),
+                    float(improvement_surcharge),
+                    float(total),
+                    float(congestion_surcharge),
+                    float(airport_fee),
+                )
+            )
 
         df = spark.createDataFrame(rows, schema=schema)
         df.coalesce(1).write.mode("append").parquet(self.output_path)

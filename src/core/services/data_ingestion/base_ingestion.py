@@ -1,15 +1,14 @@
 from __future__ import annotations
 
-from abc import ABC
 import os
 
 from loguru import logger
 from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql import functions as F
+from pyspark.sql.streaming import StreamingQuery
 
 
-class BaseIngestionService(ABC):
-
+class BaseIngestionService:
     def __init__(
         self,
         source_subfolder: str,
@@ -33,15 +32,12 @@ class BaseIngestionService(ABC):
             f"/Volumes/{self.catalog}/raw_files/{self.volume_name}/_checkpoints/"
             f"{self.target_schema}/{self.target_table_name}"
         )
-        self.full_target_table = (
-            f"{self.catalog}.{self.target_schema}.{self.target_table_name}"
-        )
+        self.full_target_table = f"{self.catalog}.{self.target_schema}.{self.target_table_name}"
 
     def extract(self, spark: SparkSession) -> DataFrame:
         logger.info(f"Reading data [{self.source_format}] from: {self.source_path}")
         return (
-            spark.readStream
-            .format("cloudFiles")
+            spark.readStream.format("cloudFiles")
             .option("cloudFiles.format", self.source_format)
             .option("cloudFiles.schemaLocation", f"{self.checkpoint_path}/schema")
             .option("cloudFiles.schemaEvolutionMode", "addNewColumns")
@@ -51,16 +47,13 @@ class BaseIngestionService(ABC):
 
     @staticmethod
     def add_audit_metadata(df: DataFrame) -> DataFrame:
-        return (
-            df
-            .withColumn("_ingested_at", F.current_timestamp())
-            .withColumn("_source_file", F.col("_metadata.file_path"))
+        return df.withColumn("_ingested_at", F.current_timestamp()).withColumn(
+            "_source_file", F.col("_metadata.file_path")
         )
 
-    def load(self, df: DataFrame) -> None:
+    def load(self, df: DataFrame) -> None | StreamingQuery:
         logger.info(f"Writing data in table Delta: {self.full_target_table}")
 
-        # Запускаем батч
         query = (
             df.writeStream.format("delta")
             .option("checkpointLocation", f"{self.checkpoint_path}/data")
@@ -72,9 +65,11 @@ class BaseIngestionService(ABC):
         query.awaitTermination()
 
         logger.info(f"Successfully loaded in {self.full_target_table}")
+        return None
 
-    def run(self, spark: SparkSession) -> None:
+    def run(self, spark: SparkSession) -> StreamingQuery | None:
         logger.info(f"Start data ingestion for {self.full_target_table}")
         raw_df = self.extract(spark)
         df_with_metadata = self.add_audit_metadata(raw_df)
         self.load(df_with_metadata)
+        return None

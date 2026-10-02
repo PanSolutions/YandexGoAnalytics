@@ -8,7 +8,7 @@ TARGET ?= dev
 
 
 format:
-	@echo "🎨 Formatting code with Ruff..."
+	@echo "Formatting code with Ruff..."
 	ruff format .
 
 lint-fix:

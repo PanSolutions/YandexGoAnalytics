@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-from src.core.services.data_ingestion.base import BaseIngestionService
+from src.core.services.data_ingestion.base_ingestion import BaseIngestionService
 
 
 class UserBatchIngestionService(BaseIngestionService):
-
     def __init__(
         self,
         source_subfolder: str = "avro",
@@ -18,7 +17,6 @@ class UserBatchIngestionService(BaseIngestionService):
 
 
 class TaxiTripBatchIngestionService(BaseIngestionService):
-
     def __init__(
         self,
         source_subfolder: str = "parquet",
