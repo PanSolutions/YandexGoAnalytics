@@ -15,7 +15,6 @@ variables:
 
 targets:
   dev:
-    mode: development
     default: true
     variables:
       catalog: yandex_go_dev
