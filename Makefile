@@ -3,7 +3,39 @@ export
 
 TARGET ?= dev
 
-.PHONY: check-env validate deploy deploy-dev deploy-stage deploy-prod run destroy
+.PHONY: check-env validate deploy deploy-dev deploy-stage deploy-prod run destroy \
+        format lint-fix fix lint format-check typecheck check check-all
+
+
+format:
+	@echo "🎨 Formatting code with Ruff..."
+	ruff format .
+
+lint-fix:
+	@echo "Auto-fixing linter errors with Ruff..."
+	ruff check --fix .
+
+fix: format lint-fix
+	@echo "Code formatted and auto-fixed!"
+
+format-check:
+	@echo "Checking code formatting..."
+	ruff format --check .
+
+lint:
+	@echo "Running Ruff linter..."
+	ruff check .
+
+typecheck:
+	@echo "Running MyPy typechecker..."
+	mypy src/
+
+check: format-check lint typecheck
+	@echo "All code checks passed successfully!"
+
+
+check-all: check validate
+	@echo "Code and Databricks Bundle are 100% ready for deployment!"
 
 check-env:
 ifndef DATABRICKS_HOST
