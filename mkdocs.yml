@@ -1,0 +1,31 @@
+site_name: Yandex Go Analytics — Engineering API Reference
+site_description: Auto-generated Technical Documentation for Ingestion Pipelines
+site_url: https://stanislavpanfilenko.github.io/YandexGoAnalytics/
+
+theme:
+  name: material
+  language: en
+  palette:
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+  features:
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [.]
+          options:
+            show_root_heading: true
+            show_source: true
+            show_signature_annotations: true
+
+nav:
+  - Overview: index.md
+  - Architecture: architecture.md
+  - API Reference: api.md

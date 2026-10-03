@@ -7,7 +7,6 @@ from pyspark.sql import types as T
 
 
 class BaseEntitySchema(ABC):
-
     METADATA_FIELDS: ClassVar[list[T.StructField]] = [
         T.StructField("_ingested_at", T.TimestampType(), False),
         T.StructField("_source_file", T.StringType(), True),
@@ -15,8 +14,7 @@ class BaseEntitySchema(ABC):
 
     @classmethod
     @abstractmethod
-    def get_spark_schema(cls) -> T.StructType:
-        ...
+    def get_spark_schema(cls) -> T.StructType: ...
 
     @classmethod
     def get_spark_schema_with_metadata(cls) -> T.StructType:

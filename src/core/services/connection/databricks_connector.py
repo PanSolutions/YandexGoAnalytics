@@ -13,7 +13,6 @@ class DatabricksConnectionError(RuntimeError):
 
 
 class DatabricksConnectionService(BaseConnectionService):
-
     def __init__(self, app_name) -> None:
         super().__init__()
         self._app_name = app_name
@@ -30,7 +29,6 @@ class DatabricksConnectionService(BaseConnectionService):
         return self._spark
 
     def connect(self) -> None:
-        super().connect()
         self._spark = self._build_spark()
         self.is_connected = True
         logger.info(
@@ -50,7 +48,6 @@ class DatabricksConnectionService(BaseConnectionService):
             self._spark = None
 
         self.is_connected = False
-        super().disconnect()
 
     @staticmethod
     def _is_runtime() -> bool:
@@ -75,12 +72,6 @@ class DatabricksConnectionService(BaseConnectionService):
             ) from e
 
         try:
-            return (
-                DatabricksSession.builder
-                .serverless()
-                .getOrCreate()
-            )
+            return DatabricksSession.builder.serverless().getOrCreate()
         except Exception as e:
-            raise DatabricksConnectionError(
-                f"Failed to connect: {e}"
-            ) from e
+            raise DatabricksConnectionError(f"Failed to connect: {e}") from e

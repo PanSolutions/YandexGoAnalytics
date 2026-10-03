@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 from pyspark.sql import types as T
+
 from src.core.schemas.base import BaseEntitySchema
 
 
 class DriverSchema(BaseEntitySchema):
-
     @classmethod
     def get_spark_schema(cls, include_phone: bool = False) -> T.StructType:
         fields = [

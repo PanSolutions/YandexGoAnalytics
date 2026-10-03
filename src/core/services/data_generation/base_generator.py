@@ -1,14 +1,13 @@
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
 import os
+from abc import ABC, abstractmethod
 
 from faker import Faker
 from pyspark.sql import SparkSession
 
 
 class BaseFileGenerator(ABC):
-
     def __init__(
         self,
         subfolder: str,
@@ -24,14 +23,12 @@ class BaseFileGenerator(ABC):
         self.catalog = os.environ.get("DATABRICKS_CATALOG", "yandex_go_dev")
         self.schema = "raw_files"
 
-        self.output_path = f"/Volumes/{self.catalog}/{self.schema}/{self.volume_name}/{self.subfolder}"
+        self.output_path = (
+            f"/Volumes/{self.catalog}/{self.schema}/{self.volume_name}/{self.subfolder}"
+        )
 
     @abstractmethod
-    def generate(self, spark: SparkSession, row_count: int) -> None:
-        ...
+    def generate(self, spark: SparkSession, row_count: int) -> None: ...
 
     def __str__(self) -> str:
-        return (
-            f"{self.__class__.__name__}(path='{self.output_path}', "
-            f"format='{self.file_format}')"
-        )
+        return f"{self.__class__.__name__}(path='{self.output_path}', format='{self.file_format}')"

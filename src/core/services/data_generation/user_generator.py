@@ -10,7 +10,6 @@ from src.core.services.data_generation.base_generator import BaseFileGenerator
 
 
 class UserGenerator(BaseFileGenerator):
-
     def __init__(
         self,
         subfolder: str = "users",
@@ -38,13 +37,15 @@ class UserGenerator(BaseFileGenerator):
 
         rows = []
         for i in range(min(row_count, len(user_ids))):
-            rows.append((
-                user_ids[i],
-                self.faker.name(),
-                self.faker.email(),
-                self.faker.date_this_decade(),
-                random.choice([True, False]),
-            ))
+            rows.append(
+                (
+                    user_ids[i],
+                    self.faker.name(),
+                    self.faker.email(),
+                    self.faker.date_this_decade(),
+                    random.choice([True, False]),
+                )
+            )
 
         df = spark.createDataFrame(rows, schema=schema)
         df.coalesce(1).write.format("avro").mode("append").save(self.output_path)
