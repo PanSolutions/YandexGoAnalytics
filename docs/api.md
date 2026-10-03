@@ -9,9 +9,3 @@ This page is automatically generated directly from the Python source code, docst
 ::: src.core.services.data_ingestion.batch_ingestion.UserBatchIngestionService
 
 ::: src.core.services.data_ingestion.batch_ingestion.TaxiTripBatchIngestionService
-
-## 3. Streaming Ingestion Service
-::: src.core.services.data_ingestion.streaming_ingestion.DriverStreamingIngestionService
-
-## 4. Schemas
-::: src.core.schemas.driver.DriverSchema
