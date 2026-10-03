@@ -11,7 +11,7 @@ from src.core.services.data_ingestion import BaseIngestionService
 class DriverStreamingIngestionService(BaseIngestionService):
     def __init__(
         self,
-        source_subfolder: str = "drivers",
+        source_subfolder: str = "json",
         target_table_name: str = "drivers",
         source_format: str = "json",
         trigger_interval: str = "2 seconds",
@@ -26,19 +26,20 @@ class DriverStreamingIngestionService(BaseIngestionService):
         self.include_phone_in_base_schema = include_phone_in_base_schema
 
     def extract(self, spark: SparkSession) -> DataFrame:
-
         logger.info(f"Starting Stream Reading [{self.source_format}] from: {self.source_path}")
 
         initial_schema = DriverSchema.get_spark_schema(
             include_phone=self.include_phone_in_base_schema
         )
 
+        schema_hints = initial_schema.toDDL()
+
         return (
             spark.readStream.format("cloudFiles")
-            .schema(initial_schema)
             .option("cloudFiles.format", self.source_format)
             .option("cloudFiles.schemaLocation", f"{self.checkpoint_path}/schema")
             .option("cloudFiles.schemaEvolutionMode", "addNewColumns")
+            .option("cloudFiles.schemaHints", schema_hints)
             .load(self.source_path)
         )
 
@@ -50,11 +51,13 @@ class DriverStreamingIngestionService(BaseIngestionService):
             .outputMode("append")
             .option("checkpointLocation", f"{self.checkpoint_path}/data")
             .option("mergeSchema", "true")
-            .trigger(processingTime=self.trigger_interval)
+            .trigger(availableNow=True)
             .toTable(self.full_target_table)
         )
 
-        logger.info(f"Stream successfully started. Query ID: {query.id} (Run ID: {query.runId})")
+        query.awaitTermination()
+
+        logger.info(f"Stream batch processed successfully. Query ID: {query.id}")
         return query
 
     def run(self, spark: SparkSession) -> StreamingQuery:
