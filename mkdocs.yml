@@ -1,10 +1,18 @@
-site_name: Yandex Go Analytics Platform
-site_description: Documentation for Data Ingestion & Delta Lake Pipelines
+site_name: Yandex Go Analytics — Engineering API Reference
+site_description: Auto-generated Technical Documentation for Ingestion Pipelines
+site_url: https://stanislavpanfilenko.github.io/YandexGoAnalytics/
+
 theme:
   name: material
+  language: en
   palette:
-    scheme: slate
-    primary: indigo
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+  features:
+    - search.suggest
+    - search.highlight
+    - content.code.copy
 
 plugins:
   - search
@@ -12,9 +20,12 @@ plugins:
       handlers:
         python:
           paths: [.]
+          options:
+            show_root_heading: true
+            show_source: true
+            show_signature_annotations: true
 
 nav:
-  - Home: index.md
-  - Architecture: index.md
-  - API Reference:
-      - Ingestion Services: api/ingestion.md
+  - Overview: index.md
+  - Architecture: architecture.md
+  - API Reference: api.md

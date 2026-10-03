@@ -4,7 +4,7 @@ export
 TARGET ?= dev
 
 .PHONY: check-env validate deploy deploy-dev deploy-stage deploy-prod run destroy \
-        format lint-fix fix lint format-check typecheck check check-all
+        format lint-fix fix lint format-check typecheck check check-all docs docs-build
 
 
 format:
@@ -83,7 +83,7 @@ security:
 	python -m pip_audit
 
 docs:
-	mkdocs serve
+	python -m mkdocs serve
 
 docs-build:
-	mkdocs build --strict
+	python -m mkdocs build --strict

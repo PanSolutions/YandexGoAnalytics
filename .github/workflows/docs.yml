@@ -8,7 +8,7 @@ on:
 
 jobs:
   docs:
-    name: Build and Verify Docs
+    name: Build & Verify Docs
     runs-on: ubuntu-latest
 
     permissions:
@@ -23,13 +23,13 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install documentation dependencies
+      - name: Install dependencies
         run: |
-          pip install mkdocs-material mkdocstrings[python] pyspark loguru
+          pip install mkdocs-material mkdocstrings[python] pyspark loguru faker
 
-      - name: Build Docs (Strict)
+      - name: Build Docs (Strict Mode)
         run: mkdocs build --strict
 
-      - name: Deploy to GitHub Pages
+      - name: Deploy Docs to GitHub Pages
         if: github.ref == 'refs/heads/production' && github.event_name == 'push'
         run: mkdocs gh-deploy --force
