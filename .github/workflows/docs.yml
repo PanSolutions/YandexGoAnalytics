@@ -25,7 +25,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install mkdocs-material mkdocstrings[python] pyspark loguru faker
+          pip install -e .
 
       - name: Build Docs (Strict Mode)
         run: mkdocs build --strict

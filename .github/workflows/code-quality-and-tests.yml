@@ -28,7 +28,7 @@ jobs:
 
       - name: Install local dependencies
         run: |
-          pip install ruff==0.16.10 mypy==2.4.0 pytest pytest-mock pyspark loguru faker
+          pip install -e .
 
       - name: Run Ruff (Lint & Format)
         run: |
