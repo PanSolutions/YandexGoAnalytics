@@ -19,11 +19,12 @@ class BaseAggregationService(ABC):
         self.catalog = os.environ.get("DATABRICKS_CATALOG", "yandex_go_dev")
         self.full_source_table = f"{self.catalog}.silver.{self.source_table_name}"
         self.full_target_table = f"{self.catalog}.gold.{self.target_table_name}"
+
         self.checkpoint_path = (
             f"/Volumes/{self.catalog}/raw_files/landing/_checkpoints/gold/{self.target_table_name}"
         )
 
-    def extract(self, spark: SparkSession) -> DataFrame:
+    def extract_stream(self, spark: SparkSession) -> DataFrame:
         logger.info(f"Reading incremental stream from: {self.full_source_table}")
         return (
             spark.readStream.format("delta")
@@ -32,25 +33,30 @@ class BaseAggregationService(ABC):
         )
 
     @abstractmethod
-    def upsert_micro_batch(self, micro_batch_df: DataFrame, batch_id: int) -> None: ...
+    def transform_stream(self, df: DataFrame) -> DataFrame: ...
 
     def optimize(self, spark: SparkSession) -> None:
         logger.info(f"Running OPTIMIZE on {self.full_target_table}")
         spark.sql(f"OPTIMIZE {self.full_target_table}")
 
     def run(self, spark: SparkSession) -> None:
-        logger.info(f"Starting incremental aggregation for: {self.full_target_table}")
+        logger.info(
+            f"Starting Streaming Aggregation with Checkpoints: {self.full_source_table} -> {self.full_target_table}"
+        )
 
-        stream_df = self.extract(spark)
+        stream_df = self.extract_stream(spark)
+
+        agg_stream = self.transform_stream(stream_df)
 
         query = (
-            stream_df.writeStream.format("delta")
-            .foreachBatch(self.upsert_micro_batch)
+            agg_stream.writeStream.format("delta")
+            .outputMode("complete")
             .option("checkpointLocation", f"{self.checkpoint_path}/data")
             .trigger(availableNow=True)
-            .start()
+            .toTable(self.full_target_table)
         )
 
         query.awaitTermination()
+
         self.optimize(spark)
-        logger.info(f"Successfully updated and optimized {self.full_target_table}")
+        logger.info(f"Successfully updated {self.full_target_table} via checkpoints!")
