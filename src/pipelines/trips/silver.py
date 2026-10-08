@@ -15,7 +15,7 @@ from pyspark.sql import functions as F
 spark = SparkSession.getActiveSession() or SparkSession.builder.getOrCreate()
 
 
-class TaxiSilverPipeline:
+class TripSilverPipeline:
     SOURCE_TABLE = "bronze_taxi"
     TARGET_TABLE = "silver_taxi"
 
@@ -24,6 +24,13 @@ class TaxiSilverPipeline:
         "valid_trip_distance": "trip_distance > 0",
         "valid_fare_amount": "fare_amount > 0",
     }
+
+    DEDUP_COLUMNS: ClassVar[list[str]] = [
+        "user_id",
+        "driver_id",
+        "pickup_datetime",
+        "dropoff_datetime",
+    ]
 
     @classmethod
     def clean(cls, df: DataFrame) -> DataFrame:
@@ -35,7 +42,7 @@ class TaxiSilverPipeline:
                 .otherwise("Other"),
             )
             .withColumn("_processed_at", F.current_timestamp())
-            .dropDuplicates()
+            .dropDuplicates(subset=cls.DEDUP_COLUMNS)
         )
 
 
@@ -70,10 +77,10 @@ class UserSilverPipeline:
         )
 
 
-@dlt.table(name=TaxiSilverPipeline.TARGET_TABLE)
-@dlt.expect_all_or_drop(TaxiSilverPipeline.DATA_QUALITY_RULES)
+@dlt.table(name=TripSilverPipeline.TARGET_TABLE)
+@dlt.expect_all_or_drop(TripSilverPipeline.DATA_QUALITY_RULES)
 def silver_taxi():
-    return TaxiSilverPipeline.clean(dlt.read_stream(TaxiSilverPipeline.SOURCE_TABLE))
+    return TripSilverPipeline.clean(dlt.read_stream(TripSilverPipeline.SOURCE_TABLE))
 
 
 @dlt.table(name=DriverSilverPipeline.TARGET_TABLE)

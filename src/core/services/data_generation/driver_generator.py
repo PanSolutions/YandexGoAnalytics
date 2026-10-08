@@ -17,6 +17,7 @@ class DriverGenerator(BaseFileGenerator):
         volume_name: str = "landing",
         locale: str = "en_US",
         pool_size: int = 100,
+        anomaly_rate: float = 0.08,
     ) -> None:
         super().__init__(
             subfolder=subfolder,
@@ -25,6 +26,7 @@ class DriverGenerator(BaseFileGenerator):
             locale=locale,
         )
         self.pool_size = pool_size
+        self.anomaly_rate = anomaly_rate
 
     @staticmethod
     def get_driver_id_pool(pool_size: int = 100) -> list[str]:
@@ -51,12 +53,24 @@ class DriverGenerator(BaseFileGenerator):
                 f"{random.choice(letters)}{random.choice(letters)}"
             )
 
+            experience = random.randint(1, 25)
+            rating = round(random.uniform(4.2, 5.0), 2)
+
+            if random.random() < self.anomaly_rate:
+                anomaly = random.choice(["bad_exp", "low_rating", "high_rating"])
+                if anomaly == "bad_exp":
+                    experience = 0
+                elif anomaly == "low_rating":
+                    rating = 0.5
+                elif anomaly == "high_rating":
+                    rating = 5.8
+
             data = [
                 random.choice(driver_ids),
                 self.faker.name(),
                 plate,
-                random.randint(1, 25),
-                round(random.uniform(4.2, 5.0), 2),
+                experience,
+                rating,
                 datetime.now(),
             ]
 

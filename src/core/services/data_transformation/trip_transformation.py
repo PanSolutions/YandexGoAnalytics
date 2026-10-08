@@ -20,6 +20,14 @@ class TripSilverTransformationService(BaseTransformationService):
         super().__init__(table_name="taxi")
 
     def transform(self, df: DataFrame) -> DataFrame:
+
+        trip_business_keys = [
+            "user_id",
+            "driver_id",
+            "pickup_datetime",
+            "dropoff_datetime",
+        ]
+
         return (
             df.filter(
                 (F.col("passenger_count") > 0)
@@ -33,5 +41,5 @@ class TripSilverTransformationService(BaseTransformationService):
                 .otherwise("Other"),
             )
             .withColumn("_processed_at", F.current_timestamp())
-            .dropDuplicates()
+            .dropDuplicates(subset=trip_business_keys)
         )

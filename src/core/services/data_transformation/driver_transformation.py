@@ -24,5 +24,5 @@ class DriverSilverTransformationService(BaseTransformationService):
                 (F.col("experience") > 0) & (F.col("rating") >= 1.0) & (F.col("rating") <= 5.0)
             )
             .withColumn("_processed_at", F.current_timestamp())
-            .dropDuplicates(subset=["name", "car_number"])
+            .dropDuplicates(subset=["id"])
         )
