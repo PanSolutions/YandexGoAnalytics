@@ -64,8 +64,7 @@ class UserSilverPipeline:
     @classmethod
     def clean(cls, df: DataFrame) -> DataFrame:
         return (
-            df
-            .withColumn("email", F.coalesce(F.col("email"), F.lit("Unknown")))
+            df.withColumn("email", F.coalesce(F.col("email"), F.lit("Unknown")))
             .withColumn("_processed_at", F.current_timestamp())
             .dropDuplicates(subset=["email"])
         )
@@ -86,6 +85,4 @@ def silver_drivers():
 @dlt.table(name=UserSilverPipeline.TARGET_TABLE)
 @dlt.expect_all_or_drop(UserSilverPipeline.DATA_QUALITY_RULES)
 def silver_users():
-    return UserSilverPipeline.clean(
-        dlt.read_stream(UserSilverPipeline.SOURCE_TABLE)
-    )
+    return UserSilverPipeline.clean(dlt.read_stream(UserSilverPipeline.SOURCE_TABLE))
