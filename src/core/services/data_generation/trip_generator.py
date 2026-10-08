@@ -19,6 +19,7 @@ class TripGenerator(BaseFileGenerator):
         locale: str = "en_US",
         user_pool_size: int = 500,
         driver_pool_size: int = 100,
+        anomaly_rate: float = 0.05,
     ) -> None:
         super().__init__(
             subfolder=subfolder,
@@ -28,6 +29,7 @@ class TripGenerator(BaseFileGenerator):
         )
         self.user_ids = UserGenerator.get_user_id_pool(user_pool_size)
         self.driver_ids = DriverGenerator.get_driver_id_pool(driver_pool_size)
+        self.anomaly_rate = anomaly_rate
 
     def generate(self, spark: SparkSession, row_count: int = 1000) -> None:
         schema = TaxiTripSchema.get_spark_schema()
@@ -40,6 +42,17 @@ class TripGenerator(BaseFileGenerator):
 
             distance = round(random.uniform(0.5, 30.0), 2)
             fare = round(distance * random.uniform(2.5, 4.0) + 3.0, 2)
+            passengers = random.randint(1, 6)
+
+            if random.random() < self.anomaly_rate:
+                anomaly = random.choice(["zero_passengers", "zero_distance", "zero_fare"])
+                if anomaly == "zero_passengers":
+                    passengers = 0
+                elif anomaly == "zero_distance":
+                    distance = 0.0
+                elif anomaly == "zero_fare":
+                    fare = 0.0
+
             extra = random.choice([0.0, 0.5, 1.0, 2.5])
             mta_tax = 0.5
             tip = round(fare * 0.15, 2) if random.random() > 0.3 else 0.0
@@ -71,7 +84,7 @@ class TripGenerator(BaseFileGenerator):
                     random.choice([1, 2]),
                     pickup,
                     dropoff,
-                    random.randint(1, 6),
+                    passengers,
                     float(distance),
                     random.choice([1, 1, 1, 2, 3, 4, 5]),
                     random.choice(["N", "Y"]),
