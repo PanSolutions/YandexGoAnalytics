@@ -69,11 +69,11 @@ deploy-prod: check-env
 
 test:
 	@echo "Running Unit tests..."
-	python -m pytest src/tests/unit -v
+	python -m pytest tests/unit -v
 
 test-integration: check-env
 	@echo "Running Integration tests..."
-	python -m pytest src/tests/integration -v
+	python -m pytest tests/integration -v
 
 
 security:

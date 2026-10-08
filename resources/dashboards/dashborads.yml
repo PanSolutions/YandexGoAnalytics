@@ -1,0 +1,19 @@
+resources:
+  dashboards:
+    yandex_go_executive_dashboard:
+      display_name: "[${bundle.target}] Yandex Go Executive Dashboard"
+      warehouse_id: ${var.warehouse_id}
+      file_path: ./lvdash_definitions/executive_overview.lvdash.json
+
+      permissions:
+        - group_name: innowise
+          level: CAN_READ
+
+    yandex_go_user_dashboard:
+      display_name: "[${bundle.target}] Yandex Go User Growth & Demographics"
+      warehouse_id: ${var.warehouse_id}
+      file_path: ./lvdash_definitions/user_growth.lvdash.json
+
+      permissions:
+        - group_name: innowise
+          level: CAN_READ

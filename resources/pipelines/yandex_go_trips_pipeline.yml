@@ -20,8 +20,8 @@ resources:
 
       libraries:
         - file:
-            path: ../../src/pipelines/trips/bronze.py
+            path: ../../src/pipelines/yandex_go_trips_pipeline/bronze.py
         - file:
-            path: ../../src/pipelines/trips/silver.py
+            path: ../../src/pipelines/yandex_go_trips_pipeline/silver.py
         - file:
-            path: ../../src/pipelines/trips/gold.py
+            path: ../../src/pipelines/yandex_go_trips_pipeline/gold.py

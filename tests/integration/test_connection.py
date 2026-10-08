@@ -1,6 +1,6 @@
 import pytest
 
-from src.core.services.connection.databricks_connector import (
+from src.core.infra.connection.databricks_connector import (
     DatabricksConnectionService,
 )
 
