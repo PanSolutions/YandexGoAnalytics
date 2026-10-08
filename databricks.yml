@@ -3,6 +3,7 @@ bundle:
 
 include:
   - resources/*.yml
+  - resources/**/*.yml
 
 variables:
   catalog:

@@ -11,7 +11,7 @@ from src.core.services.data_transformation.base_transformation import (
 class UserSilverTransformationService(BaseTransformationService):
     """
     - filter out records where name is null
-    - favorite_color null -> "Unknown"
+    - email null -> "Unknown"
     - add processed_time
     - drop duplicates
     """
