@@ -6,6 +6,10 @@ resources:
       catalog: ${var.catalog}
       target: trips_dlt
 
+      permissions:
+        - group_name: innowise
+          level: CAN_VIEW
+
       serverless: true
       edition: advanced
 
