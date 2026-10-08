@@ -19,9 +19,9 @@ resources:
         pipeline.catalog: ${var.catalog}
 
       libraries:
-        - file:
-            path: ../../src/pipelines/yandex_go_trips_pipeline/bronze.py
-        - file:
-            path: ../../src/pipelines/yandex_go_trips_pipeline/silver.py
-        - file:
-            path: ../../src/pipelines/yandex_go_trips_pipeline/gold.py
+        - notebook:
+            path: ../../src/pipelines/yandex_go_trips_pipeline/bronze.ipynb
+        - notebook:
+            path: ../../src/pipelines/yandex_go_trips_pipeline/silver.ipynb
+        - notebook:
+            path: ../../src/pipelines/yandex_go_trips_pipeline/gold.ipynb
