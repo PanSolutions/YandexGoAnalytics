@@ -1,0 +1,22 @@
+resources:
+  jobs:
+    scheduled_trips_pipeline_job:
+      name: "[${bundle.target}] Scheduled Trips Pipeline Run"
+
+      schedule:
+
+        quartz_cron_expression: "0 0 0 * * ?"
+        timezone_id: "UTC"
+        pause_status: UNPAUSED
+
+      tasks:
+        - task_key: trigger_dlt_pipeline
+
+          pipeline_task:
+
+            pipeline_id: ${resources.pipelines.yandex_go_trips_pipeline.id}
+            full_refresh: false
+
+      email_notifications:
+        on_failure:
+          - ${var.alert_email}
