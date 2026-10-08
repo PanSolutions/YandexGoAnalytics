@@ -22,6 +22,7 @@ dependencies = [
     "mkdocstrings[python]>=1.0.6",
     "mypy>=2.4.0",
     "pre-commit>=4.6.2",
+    "pydantic>=2.13.5",
     "pytest>=9.1.1",
     "python-dotenv>=1.2.3",
     "ruff>=0.16.10",
