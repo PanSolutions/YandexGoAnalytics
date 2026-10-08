@@ -1,0 +1,23 @@
+resources:
+  pipelines:
+    yandex_go_trips_pipeline:
+      name: "[${bundle.target}] Yandex Go DLT Pipeline for Trips"
+
+      catalog: ${var.catalog}
+      target: trips_dlt
+
+      serverless: true
+      edition: advanced
+
+      continuous: false
+
+      configuration:
+        pipeline.catalog: ${var.catalog}
+
+      libraries:
+        - file:
+            path: ../../src/pipelines/trips/bronze.py
+        - file:
+            path: ../../src/pipelines/trips/silver.py
+        - file:
+            path: ../../src/pipelines/trips/gold.py

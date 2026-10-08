@@ -87,3 +87,15 @@ docs:
 
 docs-build:
 	python -m mkdocs build --strict
+
+.PHONY: run-trips run-trips-dev deploy-and-run-trips
+
+run-trips: check-env
+	@echo "Running Trips DLT Pipeline on target: [$(TARGET)]..."
+	databricks bundle run yandex_go_trips_pipeline -t $(TARGET)
+
+run-trips-dev: check-env
+	@echo "Running Trips DLT Pipeline in DEV environment..."
+	databricks bundle run yandex_go_trips_pipeline -t dev
+
+deploy-and-run-trips: deploy-dev run-trips-dev
