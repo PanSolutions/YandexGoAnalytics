@@ -1,0 +1,8 @@
+resources:
+  volumes:
+    landing_volume:
+      name: landing
+      catalog_name: ${var.catalog}
+      schema_name: raw_files
+      volume_type: MANAGED
+      comment: "Landing volume for Parquet, Avro and Stream JSONs"

@@ -20,10 +20,8 @@ resources:
       catalog_name: ${var.catalog}
       comment: "Aggregated business metrics"
 
-  volumes:
-    landing_volume:
-      name: landing
-      catalog_name: ${var.catalog}
-      schema_name: raw_files
-      volume_type: MANAGED
-      comment: "Landing volume for Parquet, Avro and Stream JSONs"
+      grants:
+        - principal: innowise
+          privileges:
+            - USE_SCHEMA
+            - SELECT
