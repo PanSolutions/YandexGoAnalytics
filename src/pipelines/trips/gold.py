@@ -58,9 +58,7 @@ class DriverGoldMetricsPipeline:
     },
 )
 def gold_driver_metrics():
-    return DriverGoldMetricsPipeline.aggregate(
-        dlt.read(DriverGoldMetricsPipeline.SOURCE_TABLE)
-    )
+    return DriverGoldMetricsPipeline.aggregate(dlt.read(DriverGoldMetricsPipeline.SOURCE_TABLE))
 
 
 class UserGoldMetricsPipeline:
@@ -102,9 +100,7 @@ class TripEnrichmentService:
     },
 )
 def gold_taxi_metrics():
-    return TripGoldMetricsPipeline.aggregate(
-        dlt.read(TripGoldMetricsPipeline.SOURCE_TABLE)
-    )
+    return TripGoldMetricsPipeline.aggregate(dlt.read(TripGoldMetricsPipeline.SOURCE_TABLE))
 
 
 @dlt.table(name="gold_enriched_trips")
@@ -120,6 +116,4 @@ def gold_enriched_trips():
     comment="User registrations aggregated by date",
 )
 def gold_user_metrics():
-    return UserGoldMetricsPipeline.aggregate(
-        dlt.read(UserGoldMetricsPipeline.SOURCE_TABLE)
-    )
+    return UserGoldMetricsPipeline.aggregate(dlt.read(UserGoldMetricsPipeline.SOURCE_TABLE))
