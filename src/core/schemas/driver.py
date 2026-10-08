@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pyspark.sql import types as T
 
-from src.core.schemas.base import BaseEntitySchema
+from .base import BaseEntitySchema
 
 
 class DriverSchema(BaseEntitySchema):
