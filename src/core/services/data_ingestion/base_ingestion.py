@@ -2,10 +2,13 @@ from __future__ import annotations
 
 import os
 
+from dotenv import load_dotenv
 from loguru import logger
 from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql import functions as F
 from pyspark.sql.streaming import StreamingQuery
+
+load_dotenv()
 
 
 class BaseIngestionService:
@@ -23,7 +26,7 @@ class BaseIngestionService:
         self.target_schema = target_schema
         self.target_table_name = target_table_name
 
-        self.catalog = os.environ.get("DATABRICKS_CATALOG", "yandex_go_dev")
+        self.catalog = os.environ.get("DATABRICKS_CATALOG")
 
         self.source_path = (
             f"/Volumes/{self.catalog}/raw_files/{self.volume_name}/{self.source_subfolder}"

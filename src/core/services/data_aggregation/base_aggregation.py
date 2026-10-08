@@ -3,8 +3,11 @@ from __future__ import annotations
 import os
 from abc import ABC, abstractmethod
 
+from dotenv import load_dotenv
 from loguru import logger
 from pyspark.sql import DataFrame, SparkSession
+
+load_dotenv()
 
 
 class BaseAggregationService(ABC):
@@ -16,7 +19,7 @@ class BaseAggregationService(ABC):
         self.source_table_name = source_table_name
         self.target_table_name = target_table_name
 
-        self.catalog = os.environ.get("DATABRICKS_CATALOG", "yandex_go_dev")
+        self.catalog = os.environ.get("DATABRICKS_CATALOG")
         self.full_source_table = f"{self.catalog}.silver.{self.source_table_name}"
         self.full_target_table = f"{self.catalog}.gold.{self.target_table_name}"
 

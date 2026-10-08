@@ -3,8 +3,11 @@ from __future__ import annotations
 import os
 from abc import ABC, abstractmethod
 
+from dotenv import load_dotenv
 from faker import Faker
 from pyspark.sql import SparkSession
+
+load_dotenv()
 
 
 class BaseFileGenerator(ABC):
@@ -20,7 +23,7 @@ class BaseFileGenerator(ABC):
         self.subfolder = subfolder.strip("/")
         self.volume_name = volume_name
 
-        self.catalog = os.environ.get("DATABRICKS_CATALOG", "yandex_go_dev")
+        self.catalog = os.environ.get("DATABRICKS_CATALOG")
         self.schema = "raw_files"
 
         self.output_path = (

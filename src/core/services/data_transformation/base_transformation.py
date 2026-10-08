@@ -3,8 +3,11 @@ from __future__ import annotations
 import os
 from abc import ABC, abstractmethod
 
+from dotenv import load_dotenv
 from loguru import logger
 from pyspark.sql import DataFrame, SparkSession
+
+load_dotenv()
 
 
 class BaseTransformationService(ABC):
@@ -18,7 +21,7 @@ class BaseTransformationService(ABC):
         self.source_schema = source_schema
         self.target_schema = target_schema
 
-        self.catalog = os.environ.get("DATABRICKS_CATALOG", "yandex_go_dev")
+        self.catalog = os.environ.get("DATABRICKS_CATALOG")
         self.full_source_table = f"{self.catalog}.{self.source_schema}.{self.table_name}"
         self.full_target_table = f"{self.catalog}.{self.target_schema}.{self.table_name}"
 

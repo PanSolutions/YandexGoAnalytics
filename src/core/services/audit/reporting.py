@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 
+from dotenv import load_dotenv
 from loguru import logger
 from pyspark.sql import SparkSession
 
@@ -12,10 +13,12 @@ from src.core.schemas.reporting import (
     WorkflowAuditReport,
 )
 
+load_dotenv()
+
 
 class WorkflowReportService:
     def __init__(self) -> None:
-        self.catalog = os.environ.get("DATABRICKS_CATALOG", "yandex_go_dev")
+        self.catalog = os.environ.get("DATABRICKS_CATALOG")
         self.output_path = (
             f"/Volumes/{self.catalog}/raw_files/landing/reports/workflow_summary.json"
         )
@@ -82,7 +85,7 @@ class WorkflowReportService:
 
         report = WorkflowAuditReport(
             pipeline_name="yandex-go-analytics",
-            environment=os.environ.get("DATABRICKS_ENV", "dev"),
+            environment=os.environ.get("DATABRICKS_ENV"),
             catalog=self.catalog,
             summary=ReportSummary(
                 total_monitored_tables=sum(len(t) for t in self.tables.values()),

@@ -12,7 +12,7 @@ from pyspark.sql import functions as F
 
 spark = SparkSession.getActiveSession() or SparkSession.builder.getOrCreate()
 
-CATALOG = spark.conf.get("pipeline.catalog", "yandex_go_dev")
+CATALOG = spark.conf.get("pipeline.catalog")
 LANDING_PATH = f"/Volumes/{CATALOG}/raw_files/landing"
 
 
