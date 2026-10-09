@@ -3,7 +3,6 @@ resources:
     scheduled_trips_pipeline_job:
       name: "[${bundle.target}] Scheduled Trips Pipeline Run"
 
-
       schedule:
 
         quartz_cron_expression: "0 0 0 * * ?"

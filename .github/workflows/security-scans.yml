@@ -32,7 +32,7 @@ jobs:
 
       - name: Run Gitleaks Detection
         run: |
-          gitleaks detect --verbose --redact
+          gitleaks detect --verbose --redact -c .gitleaks.toml
 
   code-sast:
     name: Python SAST Security Audit (Bandit)
