@@ -1,0 +1,1479 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Auto-generated Technical Documentation for Ingestion Pipelines">
+      
+      
+      
+        <link rel="canonical" href="https://stanislavpanfilenko.github.io/YandexGoAnalytics/architecture/">
+      
+      
+        <link rel="prev" href="..">
+      
+      
+        <link rel="next" href="../api/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Architecture - Yandex Go Analytics — Engineering API Reference</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#architecture" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Yandex Go Analytics — Engineering API Reference" class="md-header__button md-logo" aria-label="Yandex Go Analytics — Engineering API Reference" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Yandex Go Analytics — Engineering API Reference
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Architecture
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/stanislavpanfilenko/YandexGoAnalytics" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    stanislavpanfilenko/YandexGoAnalytics
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Yandex Go Analytics — Engineering API Reference" class="md-nav__button md-logo" aria-label="Yandex Go Analytics — Engineering API Reference" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Yandex Go Analytics — Engineering API Reference
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/stanislavpanfilenko/YandexGoAnalytics" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    stanislavpanfilenko/YandexGoAnalytics
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#design-principles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Design principles
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data flow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data flow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#landing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Landing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bronze-raw-append-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bronze: raw, append-only
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#silver-cleaned-and-validated" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Silver: cleaned and validated
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gold-business-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gold: business metrics
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#two-ways-to-run-the-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Two ways to run the pipeline
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#code-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Code architecture
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Code architecture">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#package-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Package layout
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#class-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Class model
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#typical-run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Typical run
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spark-connection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Spark connection
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#incremental-processing-and-state" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Incremental processing and state
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#infrastructure-as-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Infrastructure as code
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cicd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CI/CD
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#observability" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Observability
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing strategy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#known-limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Known limitations
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#design-principles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Design principles
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data flow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data flow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#landing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Landing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bronze-raw-append-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bronze: raw, append-only
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#silver-cleaned-and-validated" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Silver: cleaned and validated
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gold-business-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gold: business metrics
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#two-ways-to-run-the-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Two ways to run the pipeline
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#code-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Code architecture
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Code architecture">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#package-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Package layout
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#class-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Class model
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#typical-run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Typical run
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spark-connection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Spark connection
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#incremental-processing-and-state" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Incremental processing and state
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#infrastructure-as-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Infrastructure as code
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cicd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CI/CD
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#observability" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Observability
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing strategy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#known-limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Known limitations
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h1>
+<p>This page explains how the platform is built: how data moves, how the code is organised, and how
+it is deployed. For class-level detail see the <a href="../api/">API Reference</a>.</p>
+<h2 id="design-principles">Design principles<a class="headerlink" href="#design-principles" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Principle</th>
+<th>How it shows up</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Medallion layers</strong></td>
+<td>Data quality increases at each step: raw (Bronze), validated (Silver), aggregated (Gold).</td>
+</tr>
+<tr>
+<td><strong>Incremental by default</strong></td>
+<td>Every stream runs with <code>availableNow=True</code> and a checkpoint, so each run processes only new data and then stops.</td>
+</tr>
+<tr>
+<td><strong>Template method</strong></td>
+<td>Each layer has a base class that fixes the <code>extract → transform → load → run</code> skeleton. Entities only supply what differs.</td>
+</tr>
+<tr>
+<td><strong>One source of configuration</strong></td>
+<td>Environment variables are read in <code>core.config</code> only.</td>
+</tr>
+<tr>
+<td><strong>Infrastructure as code</strong></td>
+<td>Schemas, volumes, the pipeline and the job live in <code>resources/</code> and are deployed by a bundle.</td>
+</tr>
+<tr>
+<td><strong>Environments are data</strong></td>
+<td><code>dev</code>, <code>staging</code> and <code>prod</code> differ only by bundle variables (catalog, environment name).</td>
+</tr>
+</tbody>
+</table>
+<h2 id="data-flow">Data flow<a class="headerlink" href="#data-flow" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>flowchart LR
+    GEN["Data generators&lt;br/&gt;(Faker)"]
+
+    subgraph LAND["Landing volume: raw_files.landing"]
+        direction TB
+        L1["parquet/ trips"]
+        L2["avro/ users"]
+        L3["json/ drivers"]
+    end
+
+    subgraph BRONZE["Bronze: raw as-is + audit columns"]
+        direction TB
+        B1["bronze.taxi"]
+        B2["bronze.users"]
+        B3["bronze.drivers"]
+    end
+
+    subgraph SILVER["Silver: cleaned and validated"]
+        direction TB
+        S1["silver.taxi"]
+        S2["silver.users"]
+        S3["silver.drivers"]
+    end
+
+    subgraph GOLD["Gold: business metrics"]
+        direction TB
+        G1["gold.taxi_metrics"]
+        G2["gold.user_metrics"]
+        G3["gold.driver_metrics"]
+        G4["gold.enriched_trips"]
+    end
+
+    AUD["WorkflowReportService&lt;br/&gt;audit report (JSON)"]
+
+    GEN --&gt; LAND
+    L1 --&gt; B1 --&gt; S1
+    L2 --&gt; B2 --&gt; S2
+    L3 --&gt; B3 --&gt; S3
+    S1 --&gt; G1
+    S1 --&gt; G4
+    S3 --&gt; G3
+    S3 --&gt; G4
+    S2 --&gt; G2
+    BRONZE -.-&gt; AUD
+    SILVER -.-&gt; AUD
+    GOLD -.-&gt; AUD</code></pre>
+<p>All tables live in Unity Catalog under <code>&lt;catalog&gt;.&lt;layer&gt;.&lt;table&gt;</code>; the catalog depends on the
+environment (<code>yandex_go_dev</code>, <code>yandex_go_staging</code>, <code>yandex_go_prod</code>).</p>
+<h3 id="landing">Landing<a class="headerlink" href="#landing" title="Permanent link">&para;</a></h3>
+<p>Files arrive in the managed volume <code>raw_files.landing</code>, one sub-folder per format:</p>
+<table>
+<thead>
+<tr>
+<th>Folder</th>
+<th>Format</th>
+<th>Entity</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>parquet/</code></td>
+<td>Parquet</td>
+<td>Taxi trips</td>
+</tr>
+<tr>
+<td><code>avro/</code></td>
+<td>Avro</td>
+<td>Users</td>
+</tr>
+<tr>
+<td><code>json/</code></td>
+<td>JSON</td>
+<td>Drivers (arrives as a stream of files)</td>
+</tr>
+</tbody>
+</table>
+<p>Besides raw files the volume holds technical data: <code>_checkpoints/</code> (streaming state and Auto Loader
+schemas) and <code>reports/workflow_summary.json</code> (the audit report).</p>
+<h3 id="bronze-raw-append-only">Bronze: raw, append-only<a class="headerlink" href="#bronze-raw-append-only" title="Permanent link">&para;</a></h3>
+<p>Bronze keeps the source data unchanged and adds two audit columns.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>_ingested_at</code></td>
+<td>Timestamp of ingestion</td>
+</tr>
+<tr>
+<td><code>_source_file</code></td>
+<td>Path of the file the row came from</td>
+</tr>
+</tbody>
+</table>
+<p>Files are read with Auto Loader (<code>cloudFiles</code>) and written to Delta in append mode. The drivers
+stream applies <code>DriverSchema</code> as schema hints, and the DLT version also enables schema evolution
+(<code>addNewColumns</code>) for it, so new JSON fields do not break ingestion.</p>
+<h3 id="silver-cleaned-and-validated">Silver: cleaned and validated<a class="headerlink" href="#silver-cleaned-and-validated" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Table</th>
+<th>Rules</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>silver.taxi</code></td>
+<td>Keep rows with <code>passenger_count</code>, <code>trip_distance</code> and <code>fare_amount</code> greater than 0. Decode <code>payment_type</code> into <code>payment_type_description</code> (1 = Credit Card, 2 = Cash, otherwise Other). Deduplicate by <code>user_id</code>, <code>driver_id</code>, <code>pickup_datetime</code>, <code>dropoff_datetime</code>.</td>
+</tr>
+<tr>
+<td><code>silver.drivers</code></td>
+<td>Keep rows with <code>experience &gt; 0</code> and <code>rating</code> between 1.0 and 5.0. Deduplicate by <code>id</code>.</td>
+</tr>
+<tr>
+<td><code>silver.users</code></td>
+<td>Drop rows without <code>full_name</code>. Replace a missing <code>email</code> with <code>"Unknown"</code>. Deduplicate by <code>email</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>Every Silver table gets a <code>_processed_at</code> timestamp.</p>
+<div class="admonition warning">
+<p class="admonition-title">Users deduplication</p>
+<p>Missing emails are replaced with <code>"Unknown"</code> before deduplication by <code>email</code>, so all users
+without an email collapse into a single row. Keep this in mind when reading user counts.</p>
+</div>
+<h3 id="gold-business-metrics">Gold: business metrics<a class="headerlink" href="#gold-business-metrics" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Table</th>
+<th>Grain</th>
+<th>Measures</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>gold.taxi_metrics</code></td>
+<td>Pickup zone (<code>pu_location_id</code>) × <code>payment_type_description</code></td>
+<td><code>total_trips</code>, <code>total_revenue</code></td>
+</tr>
+<tr>
+<td><code>gold.driver_metrics</code></td>
+<td><code>experience</code></td>
+<td><code>drivers_count</code>, <code>avg_rating</code></td>
+</tr>
+<tr>
+<td><code>gold.user_metrics</code></td>
+<td><code>registration_date</code></td>
+<td><code>users_count</code></td>
+</tr>
+<tr>
+<td><code>gold.enriched_trips</code></td>
+<td>One row per trip (deduplicated by <code>id</code>)</td>
+<td>Trip columns plus <code>driver_name</code>, <code>driver_car_number</code>, <code>driver_experience</code>, <code>driver_rating</code> (and <code>driver_phone</code> if present) from a left join with <code>silver.drivers</code></td>
+</tr>
+</tbody>
+</table>
+<p>Aggregates carry a <code>_calculated_at</code> timestamp. After each write the services run <code>OPTIMIZE</code>;
+<code>gold.driver_metrics</code> additionally uses <code>ZORDER BY (experience)</code> and <code>gold.taxi_metrics</code> uses
+Liquid Clustering on <code>pu_location_id</code>.</p>
+<h2 id="two-ways-to-run-the-pipeline">Two ways to run the pipeline<a class="headerlink" href="#two-ways-to-run-the-pipeline" title="Permanent link">&para;</a></h2>
+<p>The same business logic exists in two forms. They are independent: use whichever fits the task.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Python services (<code>src/core</code>)</th>
+<th>Delta Live Tables (<code>src/dlt_pipelines</code>)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Style</strong></td>
+<td>Imperative classes you call from a notebook, job or script</td>
+<td>Declarative tables; DLT resolves dependencies</td>
+</tr>
+<tr>
+<td><strong>Tables</strong></td>
+<td><code>bronze.taxi</code>, <code>silver.taxi</code>, <code>gold.taxi_metrics</code> in the layer schemas</td>
+<td><code>bronze_taxi</code>, <code>silver_taxi</code>, <code>gold_*</code> in the pipeline target schema <code>trips_dlt</code></td>
+</tr>
+<tr>
+<td><strong>Data quality</strong></td>
+<td>Explicit filters in <code>transform</code></td>
+<td><code>@dlt.expect_all_or_drop</code> expectations</td>
+</tr>
+<tr>
+<td><strong>Incremental state</strong></td>
+<td>Structured Streaming, <code>availableNow</code>, checkpoints in the landing volume</td>
+<td>Managed by DLT</td>
+</tr>
+<tr>
+<td><strong>Runs via</strong></td>
+<td><code>service.run(spark)</code></td>
+<td><code>databricks bundle run yandex_go_trips_pipeline</code> or the scheduled job</td>
+</tr>
+<tr>
+<td><strong>Used for</strong></td>
+<td>Development, walkthrough notebooks, reusable library code</td>
+<td>Production-style scheduled runs</td>
+</tr>
+</tbody>
+</table>
+<h2 id="code-architecture">Code architecture<a class="headerlink" href="#code-architecture" title="Permanent link">&para;</a></h2>
+<h3 id="package-layout">Package layout<a class="headerlink" href="#package-layout" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>src/core
+├── config/            get_catalog(), get_environment()
+├── infra/
+│   ├── connection/    BaseConnectionService, DatabricksConnectionService
+│   └── audit/         WorkflowReportService
+├── schemas/           Spark schemas (driver, user, trip) + Pydantic report models
+├── etl/
+│   ├── bronze/        Ingestion services
+│   ├── silver/        Transformation services
+│   └── gold/          Aggregation services
+└── utils/data_generation/   File generators for the landing volume
+</code></pre></div>
+<p>Dependencies point one way: <code>etl</code>, <code>utils</code> and <code>infra</code> may use <code>config</code> and <code>schemas</code>; <code>config</code>
+and <code>schemas</code> import nothing from the rest.</p>
+<h3 id="class-model">Class model<a class="headerlink" href="#class-model" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>classDiagram
+    class BaseIngestionService {
+        +extract(spark)
+        +add_audit_metadata(df)
+        +load(df)
+        +run(spark)
+    }
+    BaseIngestionService &lt;|-- TaxiTripBatchIngestionService
+    BaseIngestionService &lt;|-- UserBatchIngestionService
+    BaseIngestionService &lt;|-- DriverStreamingIngestionService
+
+    class BaseTransformationService {
+        +extract(spark)
+        +transform(df)*
+        +load(df)
+        +run(spark)
+    }
+    BaseTransformationService &lt;|-- TripSilverTransformationService
+    BaseTransformationService &lt;|-- DriverSilverTransformationService
+    BaseTransformationService &lt;|-- UserSilverTransformationService
+
+    class BaseAggregationService {
+        +extract_stream(spark)
+        +transform_stream(df)*
+        +optimize(spark)
+        +run(spark)
+    }
+    BaseAggregationService &lt;|-- TripGoldMetricsService
+    BaseAggregationService &lt;|-- DriverGoldMetricsService
+    BaseAggregationService &lt;|-- UserGoldMetricsService
+
+    class EnrichedTripsGoldService {
+        +run(spark)
+    }
+
+    class BaseConnectionService {
+        +connect()*
+        +disconnect()*
+    }
+    BaseConnectionService &lt;|-- DatabricksConnectionService
+
+    class BaseFileGenerator {
+        +generate(spark, row_count)*
+    }
+    BaseFileGenerator &lt;|-- TripGenerator
+    BaseFileGenerator &lt;|-- UserGenerator
+    BaseFileGenerator &lt;|-- DriverGenerator</code></pre>
+<p><code>*</code> marks methods a subclass must implement. A new entity usually needs one small subclass per
+layer, and the base class supplies the streaming, checkpoint and logging logic.</p>
+<h3 id="typical-run">Typical run<a class="headerlink" href="#typical-run" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>sequenceDiagram
+    participant Caller as Notebook / Job
+    participant Conn as DatabricksConnectionService
+    participant Svc as Ingestion service
+    participant AL as Auto Loader
+    participant Delta as Bronze Delta table
+
+    Caller-&gt;&gt;Conn: enter context
+    Conn--&gt;&gt;Caller: SparkSession
+    Caller-&gt;&gt;Svc: run(spark)
+    Svc-&gt;&gt;AL: extract (cloudFiles stream)
+    AL--&gt;&gt;Svc: streaming DataFrame
+    Svc-&gt;&gt;Svc: add _ingested_at, _source_file
+    Svc-&gt;&gt;Delta: write (append, availableNow)
+    Delta--&gt;&gt;Svc: query finished
+    Caller-&gt;&gt;Conn: exit context (stop session)</code></pre>
+<h3 id="spark-connection">Spark connection<a class="headerlink" href="#spark-connection" title="Permanent link">&para;</a></h3>
+<p><code>DatabricksConnectionService</code> is a context manager that hides where the code runs:</p>
+<ul>
+<li><strong>Inside Databricks</strong> it reuses the active session of the runtime and leaves it running on exit.</li>
+<li><strong>Elsewhere</strong> (laptop, CI) it opens a serverless session through <code>databricks-connect</code> and stops
+  it on exit.</li>
+</ul>
+<p>It raises <code>DatabricksConnectionError</code> when no session can be created, for example when
+<code>databricks-connect</code> is missing or the session is accessed before connecting.</p>
+<h2 id="incremental-processing-and-state">Incremental processing and state<a class="headerlink" href="#incremental-processing-and-state" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Read</th>
+<th>Write</th>
+<th>Checkpoint path (inside <code>raw_files.landing</code>)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Bronze</td>
+<td>Auto Loader (<code>cloudFiles</code>)</td>
+<td>Append, <code>availableNow</code></td>
+<td><code>_checkpoints/bronze/&lt;table&gt;/data</code> (Auto Loader schema in <code>.../schema</code>)</td>
+</tr>
+<tr>
+<td>Silver</td>
+<td>Delta stream with <code>ignoreChanges</code></td>
+<td>Append, <code>availableNow</code></td>
+<td><code>_checkpoints/silver/&lt;table&gt;/data</code></td>
+</tr>
+<tr>
+<td>Gold aggregates</td>
+<td>Delta stream with <code>ignoreChanges</code></td>
+<td><strong>Complete</strong> output mode, <code>availableNow</code></td>
+<td><code>_checkpoints/gold/&lt;table&gt;/data</code></td>
+</tr>
+<tr>
+<td>Gold <code>enriched_trips</code></td>
+<td>Trips stream joined with a static drivers snapshot</td>
+<td>Append, <code>availableNow</code></td>
+<td><code>_checkpoints/gold/enriched_trips/data</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>availableNow</code> makes each run behave like a batch job that resumes exactly where the last one
+stopped. Aggregates use complete mode: the whole (small) result is recomputed on every run, which
+keeps them consistent without incremental merge logic.</p>
+<h2 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Required</th>
+<th>Used by</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DATABRICKS_CATALOG</code></td>
+<td>Yes</td>
+<td><code>get_catalog()</code>, every service and generator</td>
+</tr>
+<tr>
+<td><code>DATABRICKS_ENV</code></td>
+<td>Yes</td>
+<td><code>get_environment()</code></td>
+</tr>
+<tr>
+<td><code>DATABRICKS_HOST</code></td>
+<td>For CLI, <code>make</code> and Databricks Connect</td>
+<td>Databricks tooling</td>
+</tr>
+<tr>
+<td><code>DATABRICKS_TOKEN</code></td>
+<td>In CI or token-based auth</td>
+<td>Databricks tooling</td>
+</tr>
+</tbody>
+</table>
+<p>A missing required variable raises a <code>RuntimeError</code> with the variable name instead of silently
+falling back to a default. Locally the variables come from <code>.env</code> (loaded with <code>python-dotenv</code>);
+on Databricks they come from the compute or job configuration. Schema and volume names are fixed
+by the project: <code>raw_files</code>, <code>bronze</code>, <code>silver</code>, <code>gold</code> and the <code>landing</code> volume.</p>
+<h2 id="infrastructure-as-code">Infrastructure as code<a class="headerlink" href="#infrastructure-as-code" title="Permanent link">&para;</a></h2>
+<p>Everything is declared in the bundle and created by <code>databricks bundle deploy -t &lt;target&gt;</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Resource</th>
+<th>File</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Variables and targets</td>
+<td><code>databricks.yml</code></td>
+<td><code>catalog</code>, <code>environment</code>, <code>alert_email</code>; targets <code>dev</code> (default), <code>staging</code>, <code>prod</code></td>
+</tr>
+<tr>
+<td>Schemas</td>
+<td><code>resources/schemas.yml</code></td>
+<td><code>raw_files</code>, <code>bronze</code>, <code>silver</code>, <code>gold</code>; the <code>gold</code> schema grants <code>USE_SCHEMA</code> and <code>SELECT</code> to the <code>innowise</code> group</td>
+</tr>
+<tr>
+<td>Volume</td>
+<td><code>resources/volumes.yml</code></td>
+<td>Managed volume <code>landing</code> in <code>raw_files</code></td>
+</tr>
+<tr>
+<td>Pipeline</td>
+<td><code>resources/pipelines/yandex_go_trips_pipeline.yml</code></td>
+<td>Serverless, <code>advanced</code> edition, triggered (not continuous); target schema <code>trips_dlt</code>; passes <code>pipeline.catalog</code> to the notebooks; libraries: bronze, silver and gold notebooks</td>
+</tr>
+<tr>
+<td>Job</td>
+<td><code>resources/jobs/scheduled_tripes_pipeline_job.yml</code></td>
+<td>Runs the pipeline daily at 00:00 UTC (<code>0 0 0 * * ?</code>) and emails <code>alert_email</code> on failure</td>
+</tr>
+<tr>
+<td>Dashboards</td>
+<td><code>resources/dashboards/</code></td>
+<td>Executive overview and user growth Lakeview definitions, currently commented out</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cicd">CI/CD<a class="headerlink" href="#cicd" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>flowchart LR
+    PR["Pull request to&lt;br/&gt;development / staging / production"] --&gt; Q["Lint, format,&lt;br/&gt;MyPy, unit tests"]
+    Q --&gt; I["Integration tests&lt;br/&gt;(Databricks)"]
+    Q --&gt; V["Bundle validate (dev)"]
+    PR --&gt; SEC["Security scans"]
+    PR --&gt; D1["Docs build (strict)"]
+
+    PUSH["Push to branch"] --&gt; M{"Branch"}
+    M --&gt;|development| T1["deploy -t dev"]
+    M --&gt;|staging| T2["deploy -t staging"]
+    M --&gt;|production| T3["deploy -t prod"]
+    M --&gt;|production| D2["Publish docs to GitHub Pages"]</code></pre>
+<table>
+<thead>
+<tr>
+<th>Workflow</th>
+<th>Trigger</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Code Quality &amp; Tests</strong></td>
+<td>Pull request</td>
+<td><code>ruff check</code>, <code>ruff format --check</code>, <code>mypy src/</code>, unit tests; then integration tests and <code>databricks bundle validate -t dev</code></td>
+</tr>
+<tr>
+<td><strong>Deploy to Target</strong></td>
+<td>Push to a branch, or manual run</td>
+<td>Maps <code>development</code> → <code>dev</code>, <code>staging</code> → <code>staging</code>, <code>production</code> → <code>prod</code> and runs <code>databricks bundle deploy</code></td>
+</tr>
+<tr>
+<td><strong>Security Scans</strong></td>
+<td>Pull request, push, every Monday</td>
+<td>Gitleaks (secrets), pip-audit (dependency CVEs), Bandit (static analysis)</td>
+</tr>
+<tr>
+<td><strong>Documentation</strong></td>
+<td>Pull request, push to <code>production</code></td>
+<td><code>mkdocs build --strict</code>; on <code>production</code> also <code>mkdocs gh-deploy</code></td>
+</tr>
+</tbody>
+</table>
+<p>The same checks run locally through <code>pre-commit</code> (whitespace, YAML/TOML/JSON validity, private-key
+detection, large files, Ruff, MyPy) and the Makefile.</p>
+<h2 id="observability">Observability<a class="headerlink" href="#observability" title="Permanent link">&para;</a></h2>
+<p><code>WorkflowReportService</code> audits the lakehouse on demand. For every monitored table (the three
+Bronze, three Silver and four Gold tables) it records:</p>
+<ul>
+<li>whether the table exists,</li>
+<li>the row count,</li>
+<li>the latest Delta history entry (version, operation, timestamp).</li>
+</ul>
+<p>Each table gets a status: <code>HEALTHY</code>, <code>NOT_FOUND</code> or <code>ERROR</code>. Errors are captured per table, so one
+broken table never stops the report. The result is a Pydantic <code>WorkflowAuditReport</code> with a summary
+(table count, total rows) saved to <code>reports/workflow_summary.json</code> in the landing volume. A failed
+upload is logged as a warning and does not fail the run. All services log with Loguru.</p>
+<h2 id="testing-strategy">Testing strategy<a class="headerlink" href="#testing-strategy" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Suite</th>
+<th>Location</th>
+<th>Runs against</th>
+<th>Run with</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Unit</strong></td>
+<td><code>tests/unit</code></td>
+<td>A mocked <code>SparkSession</code> (<code>spark_mock_session</code>); no Databricks needed</td>
+<td><code>make test</code></td>
+</tr>
+<tr>
+<td><strong>Integration</strong></td>
+<td><code>tests/integration</code></td>
+<td>A real serverless Databricks session (<code>spark_integration_session</code>, created once per test session)</td>
+<td><code>make test-integration</code></td>
+</tr>
+</tbody>
+</table>
+<p>Unit tests cover configuration, schemas, connectors, generators and the audit report. Integration
+tests cover the Bronze, Silver and Gold services against a real Databricks session. Shared
+fixtures live in <code>tests/fixtures</code> and are registered in <code>tests/conftest.py</code>.</p>
+<h2 id="known-limitations">Known limitations<a class="headerlink" href="#known-limitations" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Batch-style streaming.</strong> Runs use <code>availableNow</code>, so data freshness equals the job schedule
+  (daily by default), not seconds.</li>
+<li><strong>Complete-mode aggregates.</strong> Gold aggregates are recomputed fully on every run, which is fine
+  at this size and would need a different strategy for very large inputs.</li>
+<li><strong>Dashboards are not deployed yet.</strong> The Lakeview definitions exist but the bundle resource is
+  commented out.</li>
+<li><strong>Two implementations.</strong> Services and DLT must be kept in sync by hand when business rules
+  change.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.top", "toc.follow", "search.suggest", "search.highlight", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>
