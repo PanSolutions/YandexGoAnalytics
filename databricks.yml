@@ -1,0 +1,41 @@
+bundle:
+  name: yandex-go-analytics
+
+include:
+  - resources/*.yml
+  - resources/**/*.yml
+
+variables:
+  catalog:
+    description: "Target Unity Catalog"
+  environment:
+    description: "Environment name"
+  alert_email:
+    description: "Email for job failure notifications"
+    default: "stanislav.panfilenko@gmail.com"
+  warehouse_id:
+    description: "SQL Warehouse ID for BI Dashboards"
+    default: "04e4e99e981358b0"
+
+targets:
+  dev:
+    default: true
+    variables:
+      catalog: yandex_go_dev
+      environment: dev
+
+  staging:
+    mode: production
+    workspace:
+      root_path: /Workspace/Shared/.bundle/${bundle.name}/${bundle.target}
+    variables:
+      catalog: yandex_go_staging
+      environment: staging
+
+  prod:
+    mode: production
+    workspace:
+      root_path: /Workspace/Shared/.bundle/${bundle.name}/${bundle.target}
+    variables:
+      catalog: yandex_go_prod
+      environment: prod

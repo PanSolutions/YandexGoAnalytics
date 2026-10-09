@@ -1,0 +1,83 @@
+name: Code Quality & Tests
+
+on:
+  pull_request:
+    branches:
+      - development
+      - staging
+      - production
+
+env:
+  DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+  DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+
+jobs:
+  unit-tests-and-lint:
+    name: Lint & Unit Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install local dependencies
+        run: |
+          pip install -e .
+
+      - name: Run Ruff (Lint & Format)
+        run: |
+          ruff check .
+          ruff format --check .
+
+      - name: Run MyPy Typechecker
+        run: mypy src/
+
+      - name: Run Unit Tests
+        run: pytest tests/unit -v
+
+  integration-tests:
+    name: Databricks Integration Tests
+    needs: unit-tests-and-lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install dependencies with Databricks Connect
+        run: |
+          pip install pytest databricks-connect loguru faker python-dotenv pydantic
+
+      - name: Run Integration Tests
+        env:
+          DATABRICKS_CATALOG: "yandex_go_dev"
+        run: |
+          pytest tests/integration -v
+
+  bundle-validate:
+    name: Bundle Validate
+    needs: unit-tests-and-lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Databricks CLI
+        uses: databricks/setup-cli@main
+
+      - name: Validate Bundle
+        run: |
+          databricks bundle validate -t dev

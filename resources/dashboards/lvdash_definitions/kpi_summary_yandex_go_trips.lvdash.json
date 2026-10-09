@@ -1,0 +1,352 @@
+{
+  "datasets": [
+    {
+      "name": "21565dd4",
+      "displayName": "driver_metrics",
+      "config": {
+        "version": "1.1",
+        "source": "yandex_go_prod.gold.driver_metrics",
+        "dimensions": [
+          {
+            "expr": "source.*"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ac317f8a",
+      "displayName": "enriched_trips",
+      "config": {
+        "version": "1.1",
+        "source": "yandex_go_prod.gold.enriched_trips",
+        "dimensions": [
+          {
+            "expr": "source.*"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          }
+        ]
+      }
+    },
+    {
+      "name": "2a64f892",
+      "displayName": "taxi_metrics",
+      "config": {
+        "version": "1.1",
+        "source": "yandex_go_prod.gold.taxi_metrics",
+        "dimensions": [
+          {
+            "expr": "source.*"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          }
+        ]
+      }
+    },
+    {
+      "name": "b3a6123e",
+      "displayName": "user_metrics",
+      "config": {
+        "version": "1.1",
+        "source": "yandex_go_prod.gold.user_metrics",
+        "dimensions": [
+          {
+            "expr": "source.*"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          }
+        ]
+      }
+    },
+    {
+      "name": "plus_subscriber_metrics",
+      "displayName": "Plus Subscriber Penetration",
+      "queryLines": [
+        "SELECT\n",
+        "  COUNT(*) AS total_users,\n",
+        "  COUNT(\n",
+        "    CASE\n",
+        "      WHEN is_plus_subscriber = true THEN 1\n",
+        "    END\n",
+        "  ) AS plus_subscribers,\n",
+        "  ROUND(\n",
+        "    COUNT(\n",
+        "      CASE\n",
+        "        WHEN is_plus_subscriber = true THEN 1\n",
+        "      END\n",
+        "    )\n",
+        "      * 100.0\n",
+        "      / COUNT(*),\n",
+        "    1\n",
+        "  ) AS plus_penetration_pct\n",
+        "FROM\n",
+        "  yandex_go_prod.silver.users"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "30d88581",
+      "displayName": "Overview",
+      "layout": [
+        {
+          "widget": {
+            "name": "eacb93db",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "21565dd4",
+                  "fields": [
+                    {
+                      "name": "experience",
+                      "expression": "`experience`"
+                    },
+                    {
+                      "name": "sum(drivers_count)",
+                      "expression": "SUM(`drivers_count`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Drivers Count by Experience"
+              },
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "experience",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(drivers_count)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "51098761",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "b3a6123e",
+                  "fields": [
+                    {
+                      "name": "registration_date",
+                      "expression": "`registration_date`"
+                    },
+                    {
+                      "name": "sum(users_count)",
+                      "expression": "SUM(`users_count`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "User Signups Trend",
+                  "fields": []
+                }
+              },
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "registration_date",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(users_count)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 0,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "e9135574",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ac317f8a",
+                  "fields": [
+                    {
+                      "name": "pickup_datetime",
+                      "expression": "`pickup_datetime`"
+                    },
+                    {
+                      "name": "sum(total_amount)",
+                      "expression": "SUM(`total_amount`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Total Revenue by Pickup Date"
+              },
+              "version": 3,
+              "widgetType": "area",
+              "encodings": {
+                "x": {
+                  "fieldName": "pickup_datetime",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(total_amount)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 6,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "41e52161",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ac317f8a",
+                  "fields": [
+                    {
+                      "name": "trip_distance",
+                      "expression": "`trip_distance`"
+                    },
+                    {
+                      "name": "fare_amount",
+                      "expression": "`fare_amount`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Trip Distance vs Fare Amount"
+              },
+              "version": 3,
+              "widgetType": "scatter",
+              "encodings": {
+                "x": {
+                  "fieldName": "trip_distance",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "fare_amount",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 6,
+            "width": 6,
+            "height": 6
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "applyModeEnabled": false
+  }
+}

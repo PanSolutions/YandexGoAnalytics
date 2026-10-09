@@ -1,0 +1,10 @@
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Ignore lockfiles containing package hashes"
+paths = [
+  '''uv\.lock''',
+  '''poetry\.lock''',
+  '''package-lock\.json''',
+]

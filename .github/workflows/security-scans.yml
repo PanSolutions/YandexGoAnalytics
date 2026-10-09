@@ -1,0 +1,53 @@
+name: Security Scans
+
+on:
+  pull_request:
+    branches: [ development, staging, production ]
+  push:
+    branches: [ development, staging, production ]
+  schedule:
+    - cron: '0 0 * * 1'
+
+jobs:
+  secret-scan:
+    name: Secret Leak Detection (Gitleaks)
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Gitleaks CLI
+        run: |
+          GITLEAKS_VERSION="8.18.4"
+          curl -sSL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" -o gitleaks.tar.gz
+          tar -xzf gitleaks.tar.gz
+          sudo mv gitleaks /usr/local/bin/
+          rm gitleaks.tar.gz
+
+      - name: Run Gitleaks Detection
+        run: |
+          gitleaks detect --verbose --redact -c .gitleaks.toml
+
+  code-sast:
+    name: Python SAST Security Audit (Bandit)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Bandit
+        run: pip install bandit
+
+      - name: Run Bandit
+        run: bandit -r src/ -ll -ii
