@@ -58,7 +58,7 @@ jobs:
 
       - name: Install dependencies with Databricks Connect
         run: |
-          pip install pytest databricks-connect loguru faker
+          pip install pytest databricks-connect loguru faker python-dotenv
 
       - name: Run Integration Tests
         env:
