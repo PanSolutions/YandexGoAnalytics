@@ -55,6 +55,7 @@ class BaseTransformationService(ABC):
         return (
             spark.readStream.format("delta")
             .option("ignoreChanges", "true")
+            .option("schemaTrackingLocation", f"{self.checkpoint_path}/data/_schema_tracking")
             .table(self.full_source_table)
         )
 
