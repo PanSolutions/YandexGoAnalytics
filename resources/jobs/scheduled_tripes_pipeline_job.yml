@@ -14,7 +14,7 @@ resources:
 
           pipeline_task:
 
-            pipeline_id: ${resources.pipelines.yandex_go_trips_pipeline.id}
+            pipeline_id: ${resources.dlt_pipelines.yandex_go_trips_pipeline.id}
             full_refresh: false
 
       email_notifications:
