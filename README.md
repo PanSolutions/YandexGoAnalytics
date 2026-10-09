@@ -5,10 +5,6 @@
 **A production-style Data Lakehouse on Databricks for ride-hailing analytics.**
 Medallion architecture, incremental pipelines, infrastructure as code and CI/CD, all in one repo.
 
-[![Code Quality & Tests](https://github.com/stanislavpanfilenko/YandexGoAnalytics/actions/workflows/code-quality-and-tests.yml/badge.svg)](https://github.com/stanislavpanfilenko/YandexGoAnalytics/actions/workflows/code-quality-and-tests.yml)
-[![Security Scans](https://github.com/stanislavpanfilenko/YandexGoAnalytics/actions/workflows/security-scans.yml/badge.svg)](https://github.com/stanislavpanfilenko/YandexGoAnalytics/actions/workflows/security-scans.yml)
-[![Docs](https://github.com/stanislavpanfilenko/YandexGoAnalytics/actions/workflows/docs.yml/badge.svg)](https://stanislavpanfilenko.github.io/YandexGoAnalytics/)
-
 ![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)
 ![Databricks](https://img.shields.io/badge/Databricks-Unity%20Catalog-FF3621?logo=databricks&logoColor=white)
 ![Delta Lake](https://img.shields.io/badge/Delta%20Lake-Medallion-00ADD4)
@@ -218,13 +214,11 @@ Run `make` to see all targets. The most used:
 
 ## 📖 Documentation
 
-Full documentation, including architecture diagrams and a generated API reference, is published at
-**[stanislavpanfilenko.github.io/YandexGoAnalytics](https://stanislavpanfilenko.github.io/YandexGoAnalytics/)**.
-To build it locally: `make docs`.
+Full documentation, including architecture diagrams and a generated API reference, to build it locally: `make docs`.
 
 ## 👤 Author
 
-**Stanislav Panfilenko**, [@stanislavpanfilenko](https://github.com/stanislavpanfilenko)
+**Stanislav Panfilenko**, [@stanislavpanfilenko](https://github.com/PanAnastasiy)
 
 ## 📄 License
 

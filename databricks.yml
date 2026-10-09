@@ -13,9 +13,9 @@ variables:
   alert_email:
     description: "Email for job failure notifications"
     default: "stanislav.panfilenko@gmail.com"
-#  warehouse_id:
-#    description: "SQL Warehouse ID for BI Dashboards"
-#    default: "04e4e99e981358b0"
+  warehouse_id:
+    description: "SQL Warehouse ID for BI Dashboards"
+    default: "04e4e99e981358b0"
 
 targets:
   dev:
