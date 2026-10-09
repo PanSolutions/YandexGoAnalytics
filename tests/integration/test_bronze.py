@@ -21,9 +21,7 @@ class TestBronzeIngestionServices:
         """Check proper Unity Catalog paths formatting across Bronze services."""
         user_service = UserBatchIngestionService()
         assert user_service.source_format == "avro"
-        assert (
-            user_service.source_path == "/Volumes/test_cat/raw_files/landing/avro"
-        )
+        assert user_service.source_path == "/Volumes/test_cat/raw_files/landing/avro"
         assert (
             user_service.checkpoint_path
             == "/Volumes/test_cat/raw_files/landing/_checkpoints/bronze/users"
@@ -35,9 +33,7 @@ class TestBronzeIngestionServices:
         assert trip_service.full_target_table == "test_cat.bronze.taxi"
 
     @patch("src.core.etl.bronze.base.get_catalog", return_value="test_cat")
-    def test_add_audit_metadata(
-        self, _: object, spark_integration_session: SparkSession
-    ) -> None:
+    def test_add_audit_metadata(self, _: object, spark_integration_session: SparkSession) -> None:
         """Ensure technical metadata columns are appended to the DataFrame."""
         source_data = [
             Row(id="1", file_path="dbfs:/landing/file1.json"),

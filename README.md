@@ -141,7 +141,7 @@ with DatabricksConnectionService("yandex-go") as conn:
     spark = conn.spark
 
     TripGenerator(subfolder="parquet").generate(spark, row_count=1000)  # fake files -> landing
-    TaxiTripBatchIngestionService().run(spark)                          # landing -> bronze.taxi
+    TaxiTripBatchIngestionService().run(spark)  # landing -> bronze.taxi
 ```
 
 `DatabricksConnectionService` works both inside Databricks (reuses the active session) and locally

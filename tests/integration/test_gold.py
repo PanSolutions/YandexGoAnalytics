@@ -67,9 +67,7 @@ class TestGoldAggregations:
         rows = result_df.collect()
         assert len(rows) == 2
 
-        cash_group = next(
-            r for r in rows if r["payment_type_description"] == "Cash"
-        )
+        cash_group = next(r for r in rows if r["payment_type_description"] == "Cash")
         assert cash_group["total_trips"] == 2
         assert cash_group["total_revenue"] == 35.75
 

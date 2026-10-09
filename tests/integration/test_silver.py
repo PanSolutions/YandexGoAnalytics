@@ -102,9 +102,7 @@ class TestSilverTransformations:
 
         assert result_df.count() == 3
 
-        res_dict = {
-            r["user_id"]: r["payment_type_description"] for r in result_df.collect()
-        }
+        res_dict = {r["user_id"]: r["payment_type_description"] for r in result_df.collect()}
         assert res_dict["U1"] == "Credit Card"
         assert res_dict["U2"] == "Cash"
         assert res_dict["U3"] == "Other"

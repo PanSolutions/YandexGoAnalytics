@@ -52,7 +52,7 @@ class TestWorkflowReportService:
         mock_ws_client: MagicMock,
         _: object,
         __: object,
-            spark_mock_session: SparkSession,
+        spark_mock_session: SparkSession,
     ) -> None:
         """Validate end-to-end report model generation and Databricks upload triggering."""
         reporter = WorkflowReportService()
