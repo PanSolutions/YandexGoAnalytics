@@ -6,8 +6,11 @@ from .base import BaseEntitySchema
 
 
 class UserSchema(BaseEntitySchema):
+    """Schema of a passenger (user) record."""
+
     @classmethod
     def get_spark_schema(cls) -> T.StructType:
+        """Return the Spark schema of a user record."""
         return T.StructType(
             [
                 T.StructField("id", T.StringType(), False),

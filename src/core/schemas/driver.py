@@ -6,8 +6,18 @@ from .base import BaseEntitySchema
 
 
 class DriverSchema(BaseEntitySchema):
+    """Schema of a taxi driver record."""
+
     @classmethod
     def get_spark_schema(cls, include_phone: bool = False) -> T.StructType:
+        """Return the Spark schema of a driver record.
+
+        Args:
+            include_phone: Append the nullable ``phone`` column to the schema.
+
+        Returns:
+            The driver schema.
+        """
         fields = [
             T.StructField("id", T.StringType(), False),
             T.StructField("name", T.StringType(), False),

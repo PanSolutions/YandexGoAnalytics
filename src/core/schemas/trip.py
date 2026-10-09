@@ -6,8 +6,15 @@ from .base import BaseEntitySchema
 
 
 class TaxiTripSchema(BaseEntitySchema):
+    """Schema of a taxi trip record.
+
+    Follows the NYC TLC trip columns and adds ``id``, ``user_id`` and
+    ``driver_id`` to link a trip to a user and a driver.
+    """
+
     @classmethod
     def get_spark_schema(cls) -> T.StructType:
+        """Return the Spark schema of a taxi trip record."""
         return T.StructType(
             [
                 T.StructField("id", T.StringType(), False),

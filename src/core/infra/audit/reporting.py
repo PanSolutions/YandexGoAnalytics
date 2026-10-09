@@ -13,13 +13,20 @@ from src.core.schemas import (
 
 
 class WorkflowReportService:
+    """Build and persist an audit report of the Medallion tables.
+
+    The report contains existence, row count and latest Delta history entry for
+    every monitored table and is saved as JSON into a Unity Catalog volume.
+    """
+
     def __init__(self) -> None:
+        """Resolve the catalog and the list of monitored tables."""
         self.catalog = get_catalog()
         self.output_path = (
             f"/Volumes/{self.catalog}/raw_files/landing/reports/workflow_summary.json"
         )
 
-        self.tables = {
+        self.tables: dict[str, list[str]] = {
             "bronze": ["taxi", "drivers", "users"],
             "silver": ["taxi", "drivers", "users"],
             "gold": [
@@ -33,6 +40,17 @@ class WorkflowReportService:
     def _get_table_metadata(
         self, spark: SparkSession, schema: str, table_name: str
     ) -> TableAuditMetadata:
+        """Collect audit metadata for a single table.
+
+        Args:
+            spark: Active Spark session.
+            schema: Schema (layer) name, e.g. ``bronze``.
+            table_name: Table name without catalog and schema.
+
+        Returns:
+            Metadata with status ``HEALTHY``, ``NOT_FOUND`` or ``ERROR``.
+            Errors are captured in the result and are not raised.
+        """
         full_name = f"{self.catalog}.{schema}.{table_name}"
         try:
             if not spark.catalog.tableExists(full_name):
@@ -67,6 +85,15 @@ class WorkflowReportService:
             )
 
     def generate_report(self, spark: SparkSession) -> WorkflowAuditReport:
+        """Audit all monitored tables and try to save the report to the volume.
+
+        Args:
+            spark: Active Spark session.
+
+        Returns:
+            The generated report. A failure to upload it is logged as a warning
+            and does not affect the returned value.
+        """
         logger.info(f"Generating Pydantic-validated Audit Report for [{self.catalog}]...")
 
         layers_report: dict[str, dict[str, TableAuditMetadata]] = {}

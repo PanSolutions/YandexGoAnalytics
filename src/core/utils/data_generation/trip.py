@@ -2,17 +2,26 @@ from __future__ import annotations
 
 import random
 from datetime import timedelta
+from typing import Any
 
 from pyspark.sql import SparkSession
-from user import UserGenerator
 
 from src.core.schemas.trip import TaxiTripSchema
 
 from .base import BaseFileGenerator
 from .driver import DriverGenerator
+from .user import UserGenerator
 
 
 class TripGenerator(BaseFileGenerator):
+    """Generate taxi trips as Parquet files.
+
+    Trips reference users and drivers from the deterministic ID pools of
+    :class:`UserGenerator` and :class:`DriverGenerator`. A share of rows
+    (``anomaly_rate``) has zero passengers, distance or fare to exercise the
+    Silver filters.
+    """
+
     def __init__(
         self,
         subfolder: str = "taxi_trips",
@@ -22,6 +31,16 @@ class TripGenerator(BaseFileGenerator):
         driver_pool_size: int = 100,
         anomaly_rate: float = 0.05,
     ) -> None:
+        """Initialize the generator.
+
+        Args:
+            subfolder: Target folder inside the volume.
+            volume_name: Unity Catalog volume to write to.
+            locale: Faker locale.
+            user_pool_size: Number of distinct user IDs to draw from.
+            driver_pool_size: Number of distinct driver IDs to draw from.
+            anomaly_rate: Probability that a row gets an invalid value.
+        """
         super().__init__(
             subfolder=subfolder,
             file_format="parquet",
@@ -33,8 +52,14 @@ class TripGenerator(BaseFileGenerator):
         self.anomaly_rate = anomaly_rate
 
     def generate(self, spark: SparkSession, row_count: int = 1000) -> None:
+        """Generate trips and append them as one Parquet file per call.
+
+        Args:
+            spark: Active Spark session.
+            row_count: Number of trips.
+        """
         schema = TaxiTripSchema.get_spark_schema()
-        rows = []
+        rows: list[tuple[Any, ...]] = []
 
         for _ in range(row_count):
             pickup = self.faker.date_time_this_month()

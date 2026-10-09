@@ -9,6 +9,13 @@ from src.core.config import get_catalog
 
 
 class BaseIngestionService:
+    """Incrementally ingest files from a landing volume into a Bronze Delta table.
+
+    Reads files with Auto Loader (``cloudFiles``), adds audit columns and appends
+    the result to ``<catalog>.<target_schema>.<target_table_name>``. Subclasses
+    usually only set the source folder, format and target table.
+    """
+
     def __init__(
         self,
         source_subfolder: str,
@@ -17,6 +24,15 @@ class BaseIngestionService:
         volume_name: str = "landing",
         target_schema: str = "bronze",
     ) -> None:
+        """Initialize paths and table names.
+
+        Args:
+            source_subfolder: Folder inside the volume that holds the source files.
+            target_table_name: Name of the target table.
+            source_format: Auto Loader file format (``parquet``, ``json``, ``avro``, ...).
+            volume_name: Unity Catalog volume with the raw files.
+            target_schema: Schema of the target table.
+        """
         self.source_format = source_format
         self.source_subfolder = source_subfolder.strip("/")
         self.volume_name = volume_name
@@ -35,6 +51,15 @@ class BaseIngestionService:
         self.full_target_table = f"{self.catalog}.{self.target_schema}.{self.target_table_name}"
 
     def extract(self, spark: SparkSession) -> DataFrame:
+        """Create a streaming DataFrame over the source files.
+
+        Args:
+            spark: Active Spark session.
+
+        Returns:
+            A streaming DataFrame that picks up new and existing files and adds
+            new columns to the schema as they appear.
+        """
         logger.info(f"Reading data [{self.source_format}] from: {self.source_path}")
         return (
             spark.readStream.format("cloudFiles")
@@ -47,11 +72,30 @@ class BaseIngestionService:
 
     @staticmethod
     def add_audit_metadata(df: DataFrame) -> DataFrame:
+        """Add ``_ingested_at`` and ``_source_file`` columns.
+
+        Args:
+            df: Source DataFrame read with Auto Loader.
+
+        Returns:
+            The DataFrame with the audit columns.
+        """
         return df.withColumn("_ingested_at", F.current_timestamp()).withColumn(
             "_source_file", F.col("_metadata.file_path")
         )
 
-    def load(self, df: DataFrame) -> None | StreamingQuery:
+    def load(self, df: DataFrame) -> StreamingQuery | None:
+        """Write the stream to the target Delta table and wait for completion.
+
+        The query runs with ``availableNow=True``: it processes everything that is
+        available and stops.
+
+        Args:
+            df: DataFrame to write.
+
+        Returns:
+            ``None`` in the base implementation; subclasses may return the query.
+        """
         logger.info(f"Writing data in table Delta: {self.full_target_table}")
 
         query = (
@@ -68,6 +112,14 @@ class BaseIngestionService:
         return None
 
     def run(self, spark: SparkSession) -> StreamingQuery | None:
+        """Run the full ingestion: extract, add audit metadata, load.
+
+        Args:
+            spark: Active Spark session.
+
+        Returns:
+            The result of :meth:`load`.
+        """
         logger.info(f"Start data ingestion for {self.full_target_table}")
         raw_df = self.extract(spark)
         df_with_metadata = self.add_audit_metadata(raw_df)

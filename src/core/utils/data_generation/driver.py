@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import random
 from datetime import datetime
+from typing import Any
 
 from faker import Faker
 from pyspark.sql import DataFrame, SparkSession
@@ -12,6 +13,12 @@ from .base import BaseFileGenerator
 
 
 class DriverGenerator(BaseFileGenerator):
+    """Generate driver records as JSON files.
+
+    A share of rows (``anomaly_rate``) is deliberately invalid (zero experience,
+    rating below 1.0 or above 5.0) to exercise the Silver filters.
+    """
+
     def __init__(
         self,
         subfolder: str = "drivers_stream",
@@ -20,6 +27,15 @@ class DriverGenerator(BaseFileGenerator):
         pool_size: int = 100,
         anomaly_rate: float = 0.08,
     ) -> None:
+        """Initialize the generator.
+
+        Args:
+            subfolder: Target folder inside the volume.
+            volume_name: Unity Catalog volume to write to.
+            locale: Faker locale.
+            pool_size: Number of distinct driver IDs to draw from.
+            anomaly_rate: Probability that a row gets an invalid value.
+        """
         super().__init__(
             subfolder=subfolder,
             file_format="json",
@@ -31,6 +47,17 @@ class DriverGenerator(BaseFileGenerator):
 
     @staticmethod
     def get_driver_id_pool(pool_size: int = 100) -> list[str]:
+        """Return a deterministic pool of driver IDs (fixed seed).
+
+        The same pool is used by :class:`TripGenerator`, so generated trips
+        reference existing drivers.
+
+        Args:
+            pool_size: Number of IDs.
+
+        Returns:
+            A list of UUID strings, identical on every call.
+        """
         seeded_faker = Faker()
         seeded_faker.seed_instance(100)
         return [seeded_faker.uuid4() for _ in range(pool_size)]
@@ -41,11 +68,21 @@ class DriverGenerator(BaseFileGenerator):
         row_count: int = 20,
         with_phone: bool = False,
     ) -> DataFrame:
+        """Build a DataFrame of random driver records.
+
+        Args:
+            spark: Active Spark session.
+            row_count: Number of rows.
+            with_phone: Add the ``phone`` column.
+
+        Returns:
+            A DataFrame matching :class:`DriverSchema`.
+        """
         schema = DriverSchema.get_spark_schema(include_phone=with_phone)
         driver_ids = self.get_driver_id_pool(self.pool_size)
 
-        letters = ["A", "B", "E", "K", "M", "H", "O", "P", "C", "T", "Y", "X"]
-        rows = []
+        letters: list[str] = ["A", "B", "E", "K", "M", "H", "O", "P", "C", "T", "Y", "X"]
+        rows: list[tuple[Any, ...]] = []
 
         for _ in range(row_count):
             plate = (
@@ -66,7 +103,7 @@ class DriverGenerator(BaseFileGenerator):
                 elif anomaly == "high_rating":
                     rating = 5.8
 
-            data = [
+            data: list[Any] = [
                 random.choice(driver_ids),
                 self.faker.name(),
                 plate,
@@ -88,5 +125,12 @@ class DriverGenerator(BaseFileGenerator):
         row_count: int = 20,
         with_phone: bool = False,
     ) -> None:
+        """Generate driver records and append them as JSON files.
+
+        Args:
+            spark: Active Spark session.
+            row_count: Number of rows.
+            with_phone: Add the ``phone`` column.
+        """
         df = self.generate_batch_df(spark, row_count=row_count, with_phone=with_phone)
         df.write.format("json").mode("append").save(self.output_path)

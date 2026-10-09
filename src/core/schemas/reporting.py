@@ -8,6 +8,8 @@ from pydantic import BaseModel, Field
 
 
 class TableStatus(Enum):
+    """Health status of an audited table."""
+
     HEALTHY = "HEALTHY"
     NOT_FOUND = "NOT_FOUND"
     ERROR = "ERROR"
@@ -30,12 +32,6 @@ class TableAuditMetadata(BaseModel):
     )
     status: TableStatus
     error: str | None = None
-
-
-class LayerAuditReport(BaseModel):
-    """Audit report for a specific Medallion Architecture layer (Bronze, Silver, Gold)."""
-
-    tables: dict[str, TableAuditMetadata]
 
 
 class ReportSummary(BaseModel):

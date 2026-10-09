@@ -1,14 +1,21 @@
 from __future__ import annotations
 
 from loguru import logger
-from pyspark.sql import SparkSession
+from pyspark.sql import Column, SparkSession
 from pyspark.sql import functions as F
 
 from src.core.config import get_catalog
 
 
 class EnrichedTripsGoldService:
+    """Build ``gold.enriched_trips``: Silver trips joined with driver details.
+
+    Streams ``silver.taxi`` and left-joins it with a static snapshot of
+    ``silver.drivers``. Driver columns are prefixed with ``driver_``.
+    """
+
     def __init__(self) -> None:
+        """Resolve the target table and the checkpoint path."""
         self.catalog = get_catalog()
         self.full_target_table = f"{self.catalog}.gold.enriched_trips"
         self.checkpoint_path = (
@@ -16,6 +23,14 @@ class EnrichedTripsGoldService:
         )
 
     def run(self, spark: SparkSession) -> None:
+        """Join trips with drivers, append to the target table and optimize it.
+
+        The optional ``phone`` column is included only if it exists in
+        ``silver.drivers``.
+
+        Args:
+            spark: Active Spark session.
+        """
         logger.info("Reading stream from silver.taxi via checkpoints...")
 
         stream_taxi = (
@@ -27,7 +42,7 @@ class EnrichedTripsGoldService:
 
         static_drivers = spark.table(f"{self.catalog}.silver.drivers").dropDuplicates(["id"])
 
-        driver_columns = [
+        driver_columns: list[Column] = [
             F.col("id").alias("driver_id"),
             F.col("name").alias("driver_name"),
             F.col("car_number").alias("driver_car_number"),

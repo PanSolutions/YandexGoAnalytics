@@ -10,6 +10,12 @@ from .base import BaseIngestionService
 
 
 class DriverStreamingIngestionService(BaseIngestionService):
+    """Ingest the drivers JSON stream into ``bronze.drivers``.
+
+    Unlike the base class, the Auto Loader read uses :class:`DriverSchema` as
+    schema hints, and the write returns the finished streaming query.
+    """
+
     def __init__(
         self,
         source_subfolder: str = "json",
@@ -18,6 +24,16 @@ class DriverStreamingIngestionService(BaseIngestionService):
         trigger_interval: str = "2 seconds",
         include_phone_in_base_schema: bool = False,
     ) -> None:
+        """Initialize the service.
+
+        Args:
+            source_subfolder: Folder inside the volume that holds the JSON files.
+            target_table_name: Name of the target table.
+            source_format: Auto Loader file format.
+            trigger_interval: Stored for configuration only. The query currently
+                runs with ``availableNow=True`` and does not use it.
+            include_phone_in_base_schema: Include the ``phone`` column in the schema hints.
+        """
         super().__init__(
             source_subfolder=source_subfolder,
             target_table_name=target_table_name,
@@ -27,6 +43,14 @@ class DriverStreamingIngestionService(BaseIngestionService):
         self.include_phone_in_base_schema = include_phone_in_base_schema
 
     def extract(self, spark: SparkSession) -> DataFrame:
+        """Create a streaming DataFrame with driver schema hints.
+
+        Args:
+            spark: Active Spark session.
+
+        Returns:
+            A streaming DataFrame over the driver files.
+        """
         logger.info(f"Starting Stream Reading [{self.source_format}] from: {self.source_path}")
 
         initial_schema = DriverSchema.get_spark_schema(
@@ -45,6 +69,14 @@ class DriverStreamingIngestionService(BaseIngestionService):
         )
 
     def load(self, df: DataFrame) -> StreamingQuery:
+        """Append the stream to the target table and wait for completion.
+
+        Args:
+            df: DataFrame to write.
+
+        Returns:
+            The finished streaming query.
+        """
         logger.info(f"Writing continuous stream to Delta table: {self.full_target_table}")
 
         query = (
@@ -62,6 +94,14 @@ class DriverStreamingIngestionService(BaseIngestionService):
         return query
 
     def run(self, spark: SparkSession) -> StreamingQuery:
+        """Run the full ingestion: extract, add audit metadata, load.
+
+        Args:
+            spark: Active Spark session.
+
+        Returns:
+            The finished streaming query.
+        """
         logger.info(f"Initiating streaming ingestion pipeline for {self.full_target_table}")
         raw_stream_df = self.extract(spark)
         df_with_metadata = self.add_audit_metadata(raw_stream_df)
