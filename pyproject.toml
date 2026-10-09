@@ -1,20 +1,16 @@
-[build-system]
-requires = ["setuptools>=61.0", "wheel"]
-build-backend = "setuptools.build_meta"
-
 [project]
 name = "yandexgoanalytics"
 version = "0.1.0"
-description = "Add your description here"
+description = "Yandex Go Analytics Data Lakehouse Platform on Databricks"
 readme = "README.md"
 authors = [
-    { name = "Your Name", email = "youremail@example.com" }
+    { name = "Stanislav Panfilenko", email = "stanislav.panfilenko@gmail.com" }
 ]
+license = { text = "MIT" }
 requires-python = ">=3.12"
 dependencies = [
-    "build>=1.6.1",
     "databricks-connect==19.1",
-    "environ>=1.0",
+    "dotenv>=0.9.9",
     "faker>=40.39.0",
     "jupyter>=1.1.1",
     "loguru>=0.7.3",
@@ -24,11 +20,16 @@ dependencies = [
     "pre-commit>=4.6.2",
     "pydantic>=2.13.5",
     "pytest>=9.1.1",
-    "python-dotenv>=1.2.3",
     "ruff>=0.16.10",
-    "wheel>=0.48.0",
 ]
 
+[tool.pytest.ini_options]
+pythonpath = [
+    ".",
+    "src"
+]
+
+testpaths = ["tests"]
 [tool.ruff]
 target-version = "py312"
 line-length = 100
@@ -68,6 +69,3 @@ explicit_package_bases = true
 ignore_missing_imports = true
 warn_unused_ignores = true
 disallow_untyped_defs = false
-
-[tool.pytest.ini_options]
-pythonpath = ["."]

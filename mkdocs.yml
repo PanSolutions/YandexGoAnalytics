@@ -1,6 +1,8 @@
 site_name: Yandex Go Analytics — Engineering API Reference
 site_description: Auto-generated Technical Documentation for Ingestion Pipelines
 site_url: https://stanislavpanfilenko.github.io/YandexGoAnalytics/
+repo_url: https://github.com/stanislavpanfilenko/YandexGoAnalytics
+repo_name: stanislavpanfilenko/YandexGoAnalytics
 
 theme:
   name: material
@@ -10,9 +12,30 @@ theme:
       primary: indigo
       accent: indigo
   features:
+    - navigation.top
+    - toc.follow
     - search.suggest
     - search.highlight
     - content.code.copy
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
 
 plugins:
   - search
@@ -21,9 +44,18 @@ plugins:
         python:
           paths: [.]
           options:
+            docstring_style: google
+            docstring_section_style: table
+            heading_level: 3
+            members_order: source
+            merge_init_into_class: true
+            separate_signature: true
             show_root_heading: true
+            show_root_full_path: true
             show_source: true
             show_signature_annotations: true
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
 
 nav:
   - Overview: index.md

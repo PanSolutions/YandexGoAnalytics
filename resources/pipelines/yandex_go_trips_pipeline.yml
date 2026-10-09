@@ -1,0 +1,27 @@
+resources:
+  pipelines:
+    yandex_go_trips_pipeline:
+      name: "[${bundle.target}] Yandex Go DLT Pipeline for Trips"
+
+      catalog: ${var.catalog}
+      target: trips_dlt
+
+      permissions:
+        - group_name: innowise
+          level: CAN_VIEW
+
+      serverless: true
+      edition: advanced
+
+      continuous: false
+
+      configuration:
+        pipeline.catalog: ${var.catalog}
+
+      libraries:
+        - notebook:
+            path: ../../src/dlt_pipelines/yandex_go_trips_pipeline/bronze.ipynb
+        - notebook:
+            path: ../../src/dlt_pipelines/yandex_go_trips_pipeline/silver.ipynb
+        - notebook:
+            path: ../../src/dlt_pipelines/yandex_go_trips_pipeline/gold.ipynb
