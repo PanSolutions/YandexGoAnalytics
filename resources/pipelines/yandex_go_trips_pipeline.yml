@@ -20,8 +20,8 @@ resources:
 
       libraries:
         - notebook:
-            path: ../../src/pipelines/yandex_go_trips_pipeline/bronze.ipynb
+            path: ../../src/dlt_pipelines/yandex_go_trips_pipeline/bronze.ipynb
         - notebook:
-            path: ../../src/pipelines/yandex_go_trips_pipeline/silver.ipynb
+            path: ../../src/dlt_pipelines/yandex_go_trips_pipeline/silver.ipynb
         - notebook:
-            path: ../../src/pipelines/yandex_go_trips_pipeline/gold.ipynb
+            path: ../../src/dlt_pipelines/yandex_go_trips_pipeline/gold.ipynb
