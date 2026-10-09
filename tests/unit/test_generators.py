@@ -21,7 +21,7 @@ class TestDataGenerators:
 
     @patch("src.core.utils.data_generation.base.get_catalog", return_value="unit_cat")
     def test_driver_generator_dataframe_build(
-        self, _: object, spark_session: SparkSession
+        self, _: object, spark_mock_session: SparkSession
     ) -> None:
         """Validate generated Driver DataFrame schema and row count."""
         generator = DriverGenerator(pool_size=10, anomaly_rate=0.0)
@@ -30,9 +30,9 @@ class TestDataGenerators:
         mock_df = MagicMock()
         mock_df.count.return_value = 5
         mock_df.columns = ["id", "name", "rating", "experience", "phone"]
-        spark_session.createDataFrame.return_value = mock_df
+        spark_mock_session.createDataFrame.return_value = mock_df
 
-        df = generator.generate_batch_df(spark_session, row_count=5, with_phone=True)
+        df = generator.generate_batch_df(spark_mock_session, row_count=5, with_phone=True)
 
         assert df.count() == 5
         assert "phone" in df.columns

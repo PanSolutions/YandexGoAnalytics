@@ -14,15 +14,15 @@ class TestWorkflowReportService:
     @patch("src.core.infra.audit.reporting.get_catalog", return_value="test_cat")
     @patch("src.core.infra.audit.reporting.get_environment", return_value="dev")
     def test_table_metadata_not_found(
-        self, _: object, __: object, spark_session: SparkSession
+        self, _: object, __: object, spark_mock_session: SparkSession
     ) -> None:
         """Ensure missing table is handled gracefully with NOT_FOUND status."""
         reporter = WorkflowReportService()
 
         # Эмулируем отсутствие таблицы
-        spark_session.catalog.tableExists.return_value = False
+        spark_mock_session.catalog.tableExists.return_value = False
 
-        metadata = reporter._get_table_metadata(spark_session, "bronze", "missing_table")
+        metadata = reporter._get_table_metadata(spark_mock_session, "bronze", "missing_table")
         assert not metadata.exists
         assert metadata.status == TableStatus.NOT_FOUND
         assert metadata.row_count == 0
@@ -30,16 +30,16 @@ class TestWorkflowReportService:
     @patch("src.core.infra.audit.reporting.get_catalog", return_value="test_cat")
     @patch("src.core.infra.audit.reporting.get_environment", return_value="dev")
     def test_table_metadata_error_handling(
-        self, _: object, __: object, spark_session: SparkSession
+        self, _: object, __: object, spark_mock_session: SparkSession
     ) -> None:
         """Ensure unexpected Spark catalog error produces TableStatus.ERROR."""
         reporter = WorkflowReportService()
 
         # Эмулируем сбой запроса к каталогу
         with patch.object(
-            spark_session.catalog, "tableExists", side_effect=Exception("Catalog unreachable")
+            spark_mock_session.catalog, "tableExists", side_effect=Exception("Catalog unreachable")
         ):
-            metadata = reporter._get_table_metadata(spark_session, "bronze", "taxi")
+            metadata = reporter._get_table_metadata(spark_mock_session, "bronze", "taxi")
             assert not metadata.exists
             assert metadata.status == TableStatus.ERROR
             assert "Catalog unreachable" in str(metadata.error)
@@ -52,13 +52,13 @@ class TestWorkflowReportService:
         mock_ws_client: MagicMock,
         _: object,
         __: object,
-        spark_session: SparkSession,
+            spark_mock_session: SparkSession,
     ) -> None:
         """Validate end-to-end report model generation and Databricks upload triggering."""
         reporter = WorkflowReportService()
-        spark_session.catalog.tableExists.return_value = False
+        spark_mock_session.catalog.tableExists.return_value = False
 
-        report = reporter.generate_report(spark_session)
+        report = reporter.generate_report(spark_mock_session)
 
         assert report.pipeline_name == "yandex-go-analytics"
         assert report.environment == "dev"
