@@ -1,0 +1,35 @@
+name: Documentation
+
+on:
+  pull_request:
+    branches: [ development, staging, production ]
+  push:
+    branches: [ production ]
+
+jobs:
+  docs:
+    name: Build & Verify Docs
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          pip install -e .
+
+      - name: Build Docs (Strict Mode)
+        run: mkdocs build --strict
+
+      - name: Deploy Docs to GitHub Pages
+        if: github.ref == 'refs/heads/production' && github.event_name == 'push'
+        run: mkdocs gh-deploy --force
