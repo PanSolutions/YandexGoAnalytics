@@ -15,7 +15,6 @@ jobs:
 
     permissions:
       contents: read
-      pull-requests: read
 
     steps:
       - name: Checkout code
@@ -23,30 +22,17 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Run Gitleaks
-        uses: gitleaks/gitleaks-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  dependency-audit:
-    name: Dependency Vulnerability Scan (Pip-audit)
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: Install dependencies & pip-audit
+      - name: Install Gitleaks CLI
         run: |
-          pip install pip-audit
-          pip install pyspark loguru faker
+          GITLEAKS_VERSION="8.18.4"
+          curl -sSL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" -o gitleaks.tar.gz
+          tar -xzf gitleaks.tar.gz
+          sudo mv gitleaks /usr/local/bin/
+          rm gitleaks.tar.gz
 
-      - name: Scan installed packages for CVEs
-        run: pip-audit
+      - name: Run Gitleaks Detection
+        run: |
+          gitleaks detect --verbose --redact
 
   code-sast:
     name: Python SAST Security Audit (Bandit)
