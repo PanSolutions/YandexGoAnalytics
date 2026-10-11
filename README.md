@@ -12,9 +12,6 @@ Medallion architecture, incremental pipelines, infrastructure as code and CI/CD,
 ![mypy](https://img.shields.io/badge/types-mypy-2A6DB2)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
-[**📚 Documentation**](https://stanislavpanfilenko.github.io/YandexGoAnalytics/) ·
-[**🏗 Architecture**](https://stanislavpanfilenko.github.io/YandexGoAnalytics/architecture/) ·
-[**🔎 API Reference**](https://stanislavpanfilenko.github.io/YandexGoAnalytics/api/)
 
 </div>
 
